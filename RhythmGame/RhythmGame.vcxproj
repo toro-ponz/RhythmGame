@@ -1,0 +1,214 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="14.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{0123B7C5-B366-4C8E-9BCA-5C6910719953}</ProjectGuid>
+    <Keyword>Win32Proj</Keyword>
+    <RootNamespace>RhythmGame</RootNamespace>
+    <WindowsTargetPlatformVersion>10.0.10240.0</WindowsTargetPlatformVersion>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v140</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v140</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v140</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v140</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="Shared">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <LinkIncremental>true</LinkIncremental>
+    <IncludePath>C:\Users\Owner\Documents\Visual Studio 2015\OggVorbis\libvorbis\include;C:\Users\Owner\Documents\Visual Studio 2015\OggVorbis\libogg\include;C:\Program Files (x86)\Microsoft DirectX SDK\Include;$(IncludePath)</IncludePath>
+    <LibraryPath>C:\Users\Owner\Documents\Visual Studio 2015\OggVorbis\libvorbis\win32\VS2010\Win32\Debug;C:\Users\Owner\Documents\Visual Studio 2015\OggVorbis\libogg\win32\VS2010\Win32\Debug;C:\Program Files (x86)\Microsoft DirectX SDK\Lib\x86;$(LibraryPath)</LibraryPath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <LinkIncremental>true</LinkIncremental>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <LinkIncremental>false</LinkIncremental>
+    <IncludePath>C:\Users\Owner\Documents\Visual Studio 2015\OggVorbis\libvorbis\include;C:\Users\Owner\Documents\Visual Studio 2015\OggVorbis\libogg\include;C:\Program Files (x86)\Microsoft DirectX SDK\Include;$(IncludePath)</IncludePath>
+    <LibraryPath>C:\Users\Owner\Documents\Visual Studio 2015\OggVorbis\libvorbis\win32\VS2010\Win32\Release;C:\Users\Owner\Documents\Visual Studio 2015\OggVorbis\libogg\win32\VS2010\Win32\Release;C:\Program Files (x86)\Microsoft DirectX SDK\Lib\x86;$(LibraryPath)</LibraryPath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <LinkIncremental>false</LinkIncremental>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <SDLCheck>true</SDLCheck>
+      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <PreprocessorDefinitions>_DEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <SDLCheck>true</SDLCheck>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <Optimization>MaxSpeed</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <SDLCheck>true</SDLCheck>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <GenerateDebugInformation>No</GenerateDebugInformation>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <Optimization>MaxSpeed</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <PreprocessorDefinitions>NDEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <SDLCheck>true</SDLCheck>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="ConfigRenderClass.cpp" />
+    <ClCompile Include="Credit1RenderClass.cpp" />
+    <ClCompile Include="Credit2RenderClass.cpp" />
+    <ClCompile Include="FontTextureCreateClass.cpp" />
+    <ClCompile Include="InputDeviceClass.cpp" />
+    <ClCompile Include="JoystickClass.cpp" />
+    <ClCompile Include="KeyboardClass.cpp" />
+    <ClCompile Include="OggDecoder.cpp" />
+    <ClCompile Include="OggPlayClass.cpp" />
+    <ClCompile Include="OggVorbisFile.cpp" />
+    <ClCompile Include="OggVorbisMemory.cpp" />
+    <ClCompile Include="PCMDecoder.cpp" />
+    <ClCompile Include="PCMPlayer.cpp" />
+    <ClCompile Include="PlayRenderClass.cpp" />
+    <ClCompile Include="RenderClass.cpp" />
+    <ClCompile Include="ResultRenderClass.cpp" />
+    <ClCompile Include="RhythmGame.cpp" />
+    <ClCompile Include="SongSelectRenderClass.cpp" />
+    <ClCompile Include="SpriteChipClass.cpp" />
+    <ClCompile Include="SpriteDrawingClass.cpp" />
+    <ClCompile Include="SpriteDrawingClass2.cpp" />
+    <ClCompile Include="SpriteDrawingClass3.cpp" />
+    <ClCompile Include="TitleRenderClass.cpp" />
+    <ClCompile Include="WavPlayClass.cpp" />
+    <ClCompile Include="WindowClass.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="ConfigRenderClass.h" />
+    <ClInclude Include="Credit1RenderClass.h" />
+    <ClInclude Include="Credit2RenderClass.h" />
+    <ClInclude Include="DixComPtr.h" />
+    <ClInclude Include="DixSmartPtr.h" />
+    <ClInclude Include="FontTextureCreateClass.h" />
+    <ClInclude Include="InputDeviceClass.h" />
+    <ClInclude Include="JoyStickClass.h" />
+    <ClInclude Include="KeyboardClass.h" />
+    <ClInclude Include="OggDecoder.h" />
+    <ClInclude Include="OggPlayClass.h" />
+    <ClInclude Include="OggVorbisFile.h" />
+    <ClInclude Include="OggVorbisMemory.h" />
+    <ClInclude Include="OggVorbisResource.h" />
+    <ClInclude Include="PCMDecoder.h" />
+    <ClInclude Include="PCMPlayer.h" />
+    <ClInclude Include="PlayRenderClass.h" />
+    <ClInclude Include="RenderClass.h" />
+    <ClInclude Include="ResultRenderClass.h" />
+    <ClInclude Include="RhythmGame.h" />
+    <ClInclude Include="SongSelectRenderClass.h" />
+    <ClInclude Include="SpriteChipClass.h" />
+    <ClInclude Include="SpriteDrawingClass.h" />
+    <ClInclude Include="SpriteDrawingClass2.h" />
+    <ClInclude Include="SpriteDrawingClass3.h" />
+    <ClInclude Include="TitleRenderClass.h" />
+    <ClInclude Include="WavPlayClass.h" />
+    <ClInclude Include="WindowClass.h" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>
