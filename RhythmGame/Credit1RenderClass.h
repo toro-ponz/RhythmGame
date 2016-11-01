@@ -1,13 +1,13 @@
 #pragma once
 
 #include "SpriteDrawingClass.h"
-#include "WavPlayClass.h"
+#include "SoundPlayer.h"
 
 #define CREDIT2_INIT         15
 #define TITLE_INIT           20
 
 using namespace DxSprite;
-using namespace Wav;
+using namespace Sound;
 
 namespace Frame {
 	class Credit1Render {
@@ -17,8 +17,9 @@ namespace Frame {
 		void Rend(void);
 
 	private:
-		SpriteDrawing * Sprite;
-		WavPlay * wv;
+		SpriteDrawing Logo;
+		SpriteDrawing Black;
+		WavPlayer * wv;
 		int x;
 		bool flag;
 	};

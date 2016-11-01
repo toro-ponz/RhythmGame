@@ -1,11 +1,11 @@
 #pragma once
 #include "SpriteDrawingClass.h"
-#include "OggPlayClass.h"
+#include "SoundPlayer.h"
 
 #define SONG_SELECT_INIT     25
 
 using namespace DxSprite;
-using namespace Ogg;
+using namespace Sound;
 
 namespace Frame {
 	class TitleRender {
@@ -15,8 +15,9 @@ namespace Frame {
 		void Rend(void);
 
 	private:
-		SpriteDrawing * Sprite;
-		OggPlay * og;
+		SpriteDrawing Title;
+		SpriteDrawing Black;
+		OggPlayer * og;
 		bool flag;
 
 	};

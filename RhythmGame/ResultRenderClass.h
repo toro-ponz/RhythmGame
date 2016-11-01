@@ -1,7 +1,7 @@
 #pragma once
 #include <string>
-#include "SpriteDrawingClass3.h"
-#include "InputDeviceClass.h"
+#include "SpriteDrawingClass.h"
+#include "InputDevice.h"
 
 using namespace DxSprite;
 
@@ -13,7 +13,7 @@ namespace Frame {
 		void Rend();
 
 	private:
-		SpriteDrawing3 * Sprite;
+		SpriteDrawing Result;
 		int result[7];
 		int count[7] = { };
 		int countUp;

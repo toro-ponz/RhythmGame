@@ -19,8 +19,13 @@ namespace Frame {
 		void Rend(void);
 
 	private:
-		SpriteDrawing * Sprite;
-		FontTextureCreate * ftc1;
+		SpriteDrawing Title;
+		SpriteDrawing Buttons;
+		SpriteDrawing Back;
+		SpriteDrawing Level;
+		SpriteDrawing Cursor;
+		SpriteDrawing Black;
+		//FontTextureCreate * ftc1;
 		int sNum = 1;//ã»î‘çÜ
 		int SCE = 0;//ï™äÚ
 		int level = 1;

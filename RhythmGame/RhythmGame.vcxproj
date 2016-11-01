@@ -19,10 +19,10 @@
     </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{0123B7C5-B366-4C8E-9BCA-5C6910719953}</ProjectGuid>
+    <ProjectGuid>{342A2C44-9A0E-43E7-AA17-E31902670CFB}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
     <RootNamespace>RhythmGame</RootNamespace>
-    <WindowsTargetPlatformVersion>10.0.10240.0</WindowsTargetPlatformVersion>
+    <WindowsTargetPlatformVersion>8.1</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
@@ -71,19 +71,23 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>C:\Users\Owner\Documents\Visual Studio 2015\OggVorbis\libvorbis\include;C:\Users\Owner\Documents\Visual Studio 2015\OggVorbis\libogg\include;C:\Program Files (x86)\Microsoft DirectX SDK\Include;$(IncludePath)</IncludePath>
-    <LibraryPath>C:\Users\Owner\Documents\Visual Studio 2015\OggVorbis\libvorbis\win32\VS2010\Win32\Debug;C:\Users\Owner\Documents\Visual Studio 2015\OggVorbis\libogg\win32\VS2010\Win32\Debug;C:\Program Files (x86)\Microsoft DirectX SDK\Lib\x86;$(LibraryPath)</LibraryPath>
+    <IncludePath>$(HOMEDRIVE)$(HOMEPATH)\Documents\Visual Studio 2015\OggVorbis\libogg\include;$(HOMEDRIVE)$(HOMEPATH)\Documents\Visual Studio 2015\OggVorbis\libvorbis\include;$(DXSDK_DIR)Include;$(IncludePath)</IncludePath>
+    <LibraryPath>$(HOMEDRIVE)$(HOMEPATH)\Documents\Visual Studio 2015\OggVorbis\libogg\win32\VS2010\Win32\Debug;$(HOMEDRIVE)$(HOMEPATH)\Documents\Visual Studio 2015\OggVorbis\libvorbis\win32\VS2010\Win32\Debug;$(DXSDK_DIR)Lib\x86;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
+    <IncludePath>$(HOMEDRIVE)$(HOMEPATH)\Documents\Visual Studio 2015\OggVorbis\libogg\include;$(HOMEDRIVE)$(HOMEPATH)\Documents\Visual Studio 2015\OggVorbis\libvorbis\include;$(DXSDK_DIR)Include;$(IncludePath)</IncludePath>
+    <LibraryPath>$(HOMEDRIVE)$(HOMEPATH)\Documents\Visual Studio 2015\OggVorbis\libogg\win32\VS2010\Win32\Debug;$(HOMEDRIVE)$(HOMEPATH)\Documents\Visual Studio 2015\OggVorbis\libvorbis\win32\VS2010\Win32\Debug;$(DXSDK_DIR)Lib\x64;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
-    <IncludePath>C:\Users\Owner\Documents\Visual Studio 2015\OggVorbis\libvorbis\include;C:\Users\Owner\Documents\Visual Studio 2015\OggVorbis\libogg\include;C:\Program Files (x86)\Microsoft DirectX SDK\Include;$(IncludePath)</IncludePath>
-    <LibraryPath>C:\Users\Owner\Documents\Visual Studio 2015\OggVorbis\libvorbis\win32\VS2010\Win32\Release;C:\Users\Owner\Documents\Visual Studio 2015\OggVorbis\libogg\win32\VS2010\Win32\Release;C:\Program Files (x86)\Microsoft DirectX SDK\Lib\x86;$(LibraryPath)</LibraryPath>
+    <IncludePath>$(HOMEDRIVE)$(HOMEPATH)\Documents\Visual Studio 2015\OggVorbis\libogg\include;$(HOMEDRIVE)$(HOMEPATH)\Documents\Visual Studio 2015\OggVorbis\libvorbis\include;$(DXSDK_DIR)Include;$(IncludePath)</IncludePath>
+    <LibraryPath>$(HOMEDRIVE)$(HOMEPATH)\Documents\Visual Studio 2015\OggVorbis\libogg\win32\VS2010\Win32\Release;$(HOMEDRIVE)$(HOMEPATH)\Documents\Visual Studio 2015\OggVorbis\libvorbis\win32\VS2010\Win32\Release;$(DXSDK_DIR)Lib\x86;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
+    <IncludePath>$(HOMEDRIVE)$(HOMEPATH)\Documents\Visual Studio 2015\OggVorbis\libogg\include;$(HOMEDRIVE)$(HOMEPATH)\Documents\Visual Studio 2015\OggVorbis\libvorbis\include;$(DXSDK_DIR)Include;$(IncludePath)</IncludePath>
+    <LibraryPath>$(HOMEDRIVE)$(HOMEPATH)\Documents\Visual Studio 2015\OggVorbis\libogg\win32\VS2010\Win32\Release;$(HOMEDRIVE)$(HOMEPATH)\Documents\Visual Studio 2015\OggVorbis\libvorbis\win32\VS2010\Win32\Release;$(DXSDK_DIR)Lib\x64;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -93,7 +97,7 @@
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
-      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
+      <GenerateXMLDocumentationFiles>false</GenerateXMLDocumentationFiles>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -124,13 +128,13 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
-      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <GenerateXMLDocumentationFiles>false</GenerateXMLDocumentationFiles>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <GenerateDebugInformation>No</GenerateDebugInformation>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -156,11 +160,8 @@
     <ClCompile Include="Credit1RenderClass.cpp" />
     <ClCompile Include="Credit2RenderClass.cpp" />
     <ClCompile Include="FontTextureCreateClass.cpp" />
-    <ClCompile Include="InputDeviceClass.cpp" />
-    <ClCompile Include="JoystickClass.cpp" />
-    <ClCompile Include="KeyboardClass.cpp" />
+    <ClCompile Include="InputDevice.cpp" />
     <ClCompile Include="OggDecoder.cpp" />
-    <ClCompile Include="OggPlayClass.cpp" />
     <ClCompile Include="OggVorbisFile.cpp" />
     <ClCompile Include="OggVorbisMemory.cpp" />
     <ClCompile Include="PCMDecoder.cpp" />
@@ -170,12 +171,9 @@
     <ClCompile Include="ResultRenderClass.cpp" />
     <ClCompile Include="RhythmGame.cpp" />
     <ClCompile Include="SongSelectRenderClass.cpp" />
-    <ClCompile Include="SpriteChipClass.cpp" />
+    <ClCompile Include="SoundPlayer.cpp" />
     <ClCompile Include="SpriteDrawingClass.cpp" />
-    <ClCompile Include="SpriteDrawingClass2.cpp" />
-    <ClCompile Include="SpriteDrawingClass3.cpp" />
     <ClCompile Include="TitleRenderClass.cpp" />
-    <ClCompile Include="WavPlayClass.cpp" />
     <ClCompile Include="WindowClass.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -185,11 +183,8 @@
     <ClInclude Include="DixComPtr.h" />
     <ClInclude Include="DixSmartPtr.h" />
     <ClInclude Include="FontTextureCreateClass.h" />
-    <ClInclude Include="InputDeviceClass.h" />
-    <ClInclude Include="JoyStickClass.h" />
-    <ClInclude Include="KeyboardClass.h" />
+    <ClInclude Include="InputDevice.h" />
     <ClInclude Include="OggDecoder.h" />
-    <ClInclude Include="OggPlayClass.h" />
     <ClInclude Include="OggVorbisFile.h" />
     <ClInclude Include="OggVorbisMemory.h" />
     <ClInclude Include="OggVorbisResource.h" />
@@ -200,12 +195,9 @@
     <ClInclude Include="ResultRenderClass.h" />
     <ClInclude Include="RhythmGame.h" />
     <ClInclude Include="SongSelectRenderClass.h" />
-    <ClInclude Include="SpriteChipClass.h" />
+    <ClInclude Include="SoundPlayer.h" />
     <ClInclude Include="SpriteDrawingClass.h" />
-    <ClInclude Include="SpriteDrawingClass2.h" />
-    <ClInclude Include="SpriteDrawingClass3.h" />
     <ClInclude Include="TitleRenderClass.h" />
-    <ClInclude Include="WavPlayClass.h" />
     <ClInclude Include="WindowClass.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

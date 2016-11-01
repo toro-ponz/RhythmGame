@@ -1,46 +1,40 @@
 #include "SongSelectRenderClass.h"
-#include "InputDeviceClass.h"
+#include "InputDevice.h"
 
-extern BYTE g_FrameNo;
+extern BYTE FrameNumber;
 extern Device::InputDevice * inputDevice;
-extern HWND hWnd;
 
 using namespace DxSprite;
 
 namespace Frame {
 	//コンストラクタ
-	SongSelectRender::SongSelectRender() {
-		Sprite = new DxSprite::SpriteDrawing[9];
-		Sprite[0].setTexture(_T("Data/img/songselect/songselect.png"));
-		Sprite[1].setTexture(_T("Data/img/songselect/bt_conf.png"));
-		Sprite[2].setTexture(_T("Data/img/songselect/bt_exit.png"));
-		Sprite[3].setTexture(_T("Data/img/songselect/frame1.png"));
-		Sprite[4].setTexture(_T("Data/img/songselect/frame2.png"));
-		Sprite[5].setTexture(_T("Data/img/songselect/bar.png"));
-		Sprite[6].setTexture(_T("Data/img/color/black.png"));
-		Sprite[7].setTexture(_T("Data/img/songselect/level.png"));
-		Sprite[8].setTexture(_T("Data/img/songselect/cursor.png"));
-		Sprite[6].setRect(1024, 1024);
-		Sprite[1].setPosition(845.0, 256.0);
-		Sprite[2].setPosition(845.0, 512.0);
-		Sprite[3].setPosition(0.0, 328.0);
-		Sprite[5].setPosition(90.0, 0.0);
-		Sprite[6].setPosition(0.0, 0.0);
-		Sprite[7].setPosition(300.0, 156.0);
-		Sprite[8].setPosition(320.0, 176.0);
-		Sprite[6].setColor(128, 255, 255, 255);
-		ftc1 = new FontTextureCreate(_T("・Sample"), 60, 0, _T(""), 150.0f, 400.0f, false);
+	SongSelectRender::SongSelectRender() :
+			Title        (_T("Data/img/songselect/songselect.png")),
+			Buttons      (_T("Data/img/songselect/buttons.png")),
+			Back         (_T("Data/img/songselect/frame2.png")),
+			Level        (_T("Data/img/songselect/level.png")),
+			Cursor       (_T("Data/img/songselect/cursor.png")),
+			Black        (_T("Data/img/color/black.png")) {
+		Black.setRect(0, 1024, 1024);
+		Buttons.setPosition(0, 845.0, 256.0);
+		//Buttons.setPosition(1, 845.0, 512.0);
+		Back.setPosition(0, 0.0, 328.0);
+		//Back.setPosition(1, 90.0, 0.0);
+		Black.setPosition(0, 0.0, 0.0);
+		Level.setPosition(0, 300.0, 156.0);
+		Cursor.setPosition(0, 320.0, 176.0);
+		Black.setColor(D3DCOLOR_ARGB(128, 255, 255, 255), 0);
+		//ftc1 = new FontTextureCreate(_T("・Sample"), 60, 0, _T(""), 150.0f, 400.0f, false);
 	}
 
 	//デストラクタ
 	SongSelectRender::~SongSelectRender() {
-		delete[] Sprite;
-		delete ftc1;
+		//delete ftc1;
 	}
 
 	//Rend関数
 	void SongSelectRender::Rend(void) {
-		g_pSprite->Begin(NULL);
+		Sprite->Begin(NULL);
 
 		inputDevice->getPushState();
 		if (SCE == 0) {
@@ -51,8 +45,8 @@ namespace Frame {
 				//sNum++;
 			}
 			if (inputDevice->getPushState(2, 1)) {
-				Sprite[1].setPosition(845.0 - 50.0, 256.0, 0.0);
-				Sprite[2].setPosition(845.0, 512.0, 0.0);
+				Buttons.setPosition(0, 845.0 - 50.0, 256.0, 0.0);
+				//Buttons.setPosition(1, 845.0, 512.0, 0.0);
 				SCE = 1;
 			}
 			if (inputDevice->getPushState(3, 1)) {
@@ -61,21 +55,21 @@ namespace Frame {
 		}
 		else if (SCE == 1 || SCE == 2){
 			if (inputDevice->getPushState(0, 1)) {
-				Sprite[1].setPosition(845.0 - 50.0, 256.0, 0.0);
-				Sprite[2].setPosition(845.0, 512.0, 0.0);
+				Buttons.setPosition(0, 845.0 - 50.0, 256.0, 0.0);
+				Buttons.setPosition(1, 845.0, 512.0, 0.0);
 				SCE = 1;
 			}
 			if (inputDevice->getPushState(1, 1)) {
-				Sprite[1].setPosition(845.0, 256.0, 0.0);
-				Sprite[2].setPosition(845.0 - 50.0, 512.0, 0.0);
+				Buttons.setPosition(0, 845.0, 256.0, 0.0);
+				Buttons.setPosition(1, 845.0 - 50.0, 512.0, 0.0);
 				SCE = 2;
 			}
 			if (inputDevice->getPushState(2, 1)) {
 
 			}
 			if (inputDevice->getPushState(3, 1)) {
-				Sprite[1].setPosition(845.0, 256.0, 0.0);
-				Sprite[2].setPosition(845.0, 512.0, 0.0);
+				Buttons.setPosition(0, 845.0, 256.0, 0.0);
+				Buttons.setPosition(1, 845.0, 512.0, 0.0);
 				SCE = 0;
 			}
 		}
@@ -90,48 +84,48 @@ namespace Frame {
 				level = 1;
 				SCE = 0;
 			}
-			Sprite[8].setPosition(320.0, (float)(176.0 + (130.0 * (level - 1))), 0.0);
+			Cursor.setPosition(0, 320.0, (float)(176.0 + (130.0 * (level - 1))), 0.0);
 		}
 		if (inputDevice->getPushState(4, 1)) {
 			if (SCE == 0) {
 				//レベル選択画面へ
 				SCE = 3;
 			}
-			else if (SCE == 1) g_FrameNo = CONFIG_INIT;
-			else if (SCE == 2) g_FrameNo = 255;
+			else if (SCE == 1) FrameNumber = CONFIG_INIT;
+			else if (SCE == 2) FrameNumber = 255;
 			else {
-				if (level == 1) g_FrameNo = PLAY_EASY_INIT;
-				else if (level == 2) g_FrameNo = PLAY_NORMAL_INIT;
-				else g_FrameNo = PLAY_HARD_INIT;
+				if (level == 1) FrameNumber = PLAY_EASY_INIT;
+				else if (level == 2) FrameNumber = PLAY_NORMAL_INIT;
+				else FrameNumber = PLAY_HARD_INIT;
 			}
 		}
 
-		Sprite[0].Draw();
-		Sprite[1].Draw();
-		Sprite[2].Draw();
-		Sprite[4].setPosition(0.0, 145.0);
-		Sprite[4].Draw();
-		Sprite[4].setPosition(0.0, 260.0);
-		Sprite[4].Draw();
-		Sprite[4].setPosition(0.0, 525.0);
-		Sprite[4].Draw();
-		Sprite[4].setPosition(0.0, 650.0);
-		Sprite[4].Draw();
-		if (SCE == 0 || SCE == 4) Sprite[3].Draw();
+		Title.Draw();
+		Buttons.Draw();
+		Buttons.Draw();
+		Back.setPosition(0, 0.0, 145.0);
+		Back.Draw();
+		Back.setPosition(0, 0.0, 260.0);
+		Back.Draw();
+		Back.setPosition(0, 0.0, 525.0);
+		Back.Draw();
+		Back.setPosition(0, 0.0, 650.0);
+		Back.Draw();
+		if (SCE == 0 || SCE == 4) Back.Draw();
 		else {
-			Sprite[4].setPosition(0.0, 390.0, 0.0);
-			Sprite[4].Draw();
+			Back.setPosition(0, 0.0, 390.0, 0.0);
+			Back.Draw();
 		}
-		Sprite[5].Draw();
+		Back.Draw();
 
-		ftc1->Rend();
+		//ftc1->Rend();
 
 		if (SCE == 3) {
-			Sprite[6].Draw();
-			Sprite[7].Draw();
-			Sprite[8].Draw();
+			Black.Draw();
+			Level.Draw();
+			Cursor.Draw();
 		}
 
-		g_pSprite->End();
+		Sprite->End();
 	}
 }

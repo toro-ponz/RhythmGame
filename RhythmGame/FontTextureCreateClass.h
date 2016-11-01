@@ -16,14 +16,14 @@ namespace Font {
 	public:
 		FontTextureCreate(TCHAR*, int, int, TCHAR*, float, float, bool);
 		~FontTextureCreate();
-		void Rend(void);
+		void Rend();
 		void FontCreate(TCHAR*, int);
 		void setFontStatus(int, int, TCHAR);
 
 	protected:
 
 	private:
-		SpriteDrawing * Sprite;
+		//SpriteDrawing * Sprite;
 		LOGFONT lf;
 		LPDIRECT3DTEXTURE9 pTex;
 		int fontSize;

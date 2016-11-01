@@ -4,7 +4,6 @@
 
 #define SONG_SELECT_INIT         25
 
-
 using namespace DxSprite;
 
 namespace Frame {
@@ -15,7 +14,7 @@ namespace Frame {
 		void Rend(void);
 
 	private:
-		SpriteDrawing * Sprite;
-
+		SpriteDrawing Title;
+		SpriteDrawing Buttons;
 	};
 }

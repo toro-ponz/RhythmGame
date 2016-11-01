@@ -1,17 +1,54 @@
-#pragma comment ( lib, "dxguid.lib" )
-#pragma comment ( lib, "dsound.lib" )
-#pragma comment ( lib, "winmm.lib" )
-
 #include <tchar.h>
-#include <dsound.h>
-#include <mmsystem.h>
-#include "WavPlayClass.h"
+#include "SoundPlayer.h"
+#include "OggDecoder.h"
+#include "OggVorbisMemory.h"
+#include "OggVorbisFile.h"
+#include "DixSmartPtr.h"
+#include "DixComPtr.h"
 
 extern HWND hWnd;
 
-namespace Wav {
+namespace Sound {
 	//コンストラクタ
-	WavPlay::WavPlay(TCHAR * file) {
+	OggPlayer::OggPlayer(string file) {
+		// DirectSoundの作成
+		DirectSoundCreate8(NULL, &pDS8, NULL);
+		Dix::Com_ptr< IDirectSound8 > cpDS8(pDS8);
+		pDS8->SetCooperativeLevel(hWnd, DSSCL_PRIORITY);
+
+		// Oggオブジェクト作成
+		Dix::sp< Dix::OggVorbisMemory > spOggResource(new Dix::OggVorbisMemory(file.c_str()));
+		Dix::sp< Dix::OggDecoder > spOggDecoder(new Dix::OggDecoder(spOggResource));
+
+		player.setDevice(cpDS8);
+		player.setDecoder(spOggDecoder);
+	}
+
+	//デストラクタ
+	OggPlayer::~OggPlayer() {
+
+	}
+
+	//Play関数
+	bool OggPlayer::Play(bool loop) {
+		if (player.play(loop) == false) {
+			return false;
+		}
+		return true;
+	}
+
+	//Pause関数
+	void OggPlayer::Pause() {
+		player.pause();
+	}
+
+	//getState関数
+	int OggPlayer::getState(void) {
+		return player.getState();
+	}
+
+	//コンストラクタ
+	WavPlayer::WavPlayer(TCHAR * file) {
 		// Waveファイルオープン
 		WAVEFORMATEX wFmt;
 		char *pWaveData = 0;
@@ -50,17 +87,17 @@ namespace Wav {
 	}
 
 	//デストラクタ
-	WavPlay::~WavPlay() {
+	WavPlayer::~WavPlayer() {
 		pDSBuffer->Release();
 	}
 
 	//Play関数
-	void WavPlay::Play(void) {
+	void WavPlayer::Play(void) {
 		pDSBuffer->Play(0, 0, 0);
 	}
 
 	//openWave関数
-	bool WavPlay::openWave(TCHAR *filepath, WAVEFORMATEX &waveFormatEx, char** ppData, DWORD &dataSize) {
+	bool WavPlayer::openWave(TCHAR *filepath, WAVEFORMATEX &waveFormatEx, char** ppData, DWORD &dataSize) {
 		if (filepath == 0)
 			return false;
 
@@ -73,7 +110,6 @@ namespace Wav {
 		if (!hMmio)
 			return false; // ファイルオープン失敗
 
-						  // RIFFチャンク検索
 		MMRESULT mmRes;
 		MMCKINFO riffChunk;
 		riffChunk.fccType = mmioFOURCC('W', 'A', 'V', 'E');

@@ -13,86 +13,80 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="ソース ファイル\Render">
+      <UniqueIdentifier>{4b61bf29-e2ef-455b-930e-735b41d3a7f4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\OggVorbis">
+      <UniqueIdentifier>{069d8fe7-1f51-41ea-bcc1-17cb0a4cb50f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\Render">
+      <UniqueIdentifier>{2560265b-08cc-4142-85f9-0613a614c2ed}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\OggVorbis">
+      <UniqueIdentifier>{fdf18ce0-a5c5-472d-98b3-2bc1e56cb63d}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="RhythmGame.cpp">
+    <ClCompile Include="FontTextureCreateClass.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="SpriteDrawingClass.cpp">
+    <ClCompile Include="RhythmGame.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
     <ClCompile Include="WindowClass.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="RenderClass.cpp">
+    <ClCompile Include="SpriteDrawingClass.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="TitleRenderClass.cpp">
+    <ClCompile Include="InputDevice.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="Credit1RenderClass.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="Credit2RenderClass.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="SongSelectRenderClass.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="OggVorbisFile.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="OggVorbisMemory.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="PCMDecoder.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="PCMPlayer.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="OggDecoder.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="OggPlayClass.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="WavPlayClass.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="PlayRenderClass.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="FontTextureCreateClass.cpp">
+    <ClCompile Include="SoundPlayer.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
     <ClCompile Include="ConfigRenderClass.cpp">
-      <Filter>ソース ファイル</Filter>
+      <Filter>ソース ファイル\Render</Filter>
     </ClCompile>
-    <ClCompile Include="SpriteDrawingClass2.cpp">
-      <Filter>ソース ファイル</Filter>
+    <ClCompile Include="Credit1RenderClass.cpp">
+      <Filter>ソース ファイル\Render</Filter>
     </ClCompile>
-    <ClCompile Include="SpriteDrawingClass3.cpp">
-      <Filter>ソース ファイル</Filter>
+    <ClCompile Include="Credit2RenderClass.cpp">
+      <Filter>ソース ファイル\Render</Filter>
     </ClCompile>
-    <ClCompile Include="SpriteChipClass.cpp">
-      <Filter>ソース ファイル</Filter>
+    <ClCompile Include="PlayRenderClass.cpp">
+      <Filter>ソース ファイル\Render</Filter>
     </ClCompile>
-    <ClCompile Include="KeyboardClass.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="InputDeviceClass.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="JoystickClass.cpp">
-      <Filter>ソース ファイル</Filter>
+    <ClCompile Include="RenderClass.cpp">
+      <Filter>ソース ファイル\Render</Filter>
     </ClCompile>
     <ClCompile Include="ResultRenderClass.cpp">
-      <Filter>ソース ファイル</Filter>
+      <Filter>ソース ファイル\Render</Filter>
+    </ClCompile>
+    <ClCompile Include="SongSelectRenderClass.cpp">
+      <Filter>ソース ファイル\Render</Filter>
+    </ClCompile>
+    <ClCompile Include="TitleRenderClass.cpp">
+      <Filter>ソース ファイル\Render</Filter>
+    </ClCompile>
+    <ClCompile Include="OggDecoder.cpp">
+      <Filter>ソース ファイル\OggVorbis</Filter>
+    </ClCompile>
+    <ClCompile Include="OggVorbisFile.cpp">
+      <Filter>ソース ファイル\OggVorbis</Filter>
+    </ClCompile>
+    <ClCompile Include="OggVorbisMemory.cpp">
+      <Filter>ソース ファイル\OggVorbis</Filter>
+    </ClCompile>
+    <ClCompile Include="PCMDecoder.cpp">
+      <Filter>ソース ファイル\OggVorbis</Filter>
+    </ClCompile>
+    <ClCompile Include="PCMPlayer.cpp">
+      <Filter>ソース ファイル\OggVorbis</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="SpriteDrawingClass.h">
+    <ClInclude Include="FontTextureCreateClass.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
     <ClInclude Include="RhythmGame.h">
@@ -101,80 +95,62 @@
     <ClInclude Include="WindowClass.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="RenderClass.h">
+    <ClInclude Include="SpriteDrawingClass.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="TitleRenderClass.h">
+    <ClInclude Include="InputDevice.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="Credit1RenderClass.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="Credit2RenderClass.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="SongSelectRenderClass.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="OggVorbisResource.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="PCMDecoder.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="PCMPlayer.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="WavPlayClass.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="DixComPtr.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="DixSmartPtr.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="OggDecoder.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="OggPlayClass.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="OggVorbisFile.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="OggVorbisMemory.h">
+    <ClInclude Include="SoundPlayer.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
     <ClInclude Include="PlayRenderClass.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="FontTextureCreateClass.h">
-      <Filter>ヘッダー ファイル</Filter>
+      <Filter>ヘッダー ファイル\Render</Filter>
     </ClInclude>
     <ClInclude Include="ConfigRenderClass.h">
-      <Filter>ヘッダー ファイル</Filter>
+      <Filter>ヘッダー ファイル\Render</Filter>
     </ClInclude>
-    <ClInclude Include="SpriteDrawingClass2.h">
-      <Filter>ヘッダー ファイル</Filter>
+    <ClInclude Include="Credit1RenderClass.h">
+      <Filter>ヘッダー ファイル\Render</Filter>
     </ClInclude>
-    <ClInclude Include="SpriteDrawingClass3.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="SpriteChipClass.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="KeyboardClass.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="JoyStickClass.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="InputDeviceClass.h">
-      <Filter>ヘッダー ファイル</Filter>
+    <ClInclude Include="Credit2RenderClass.h">
+      <Filter>ヘッダー ファイル\Render</Filter>
     </ClInclude>
     <ClInclude Include="ResultRenderClass.h">
-      <Filter>ヘッダー ファイル</Filter>
+      <Filter>ヘッダー ファイル\Render</Filter>
+    </ClInclude>
+    <ClInclude Include="RenderClass.h">
+      <Filter>ヘッダー ファイル\Render</Filter>
+    </ClInclude>
+    <ClInclude Include="SongSelectRenderClass.h">
+      <Filter>ヘッダー ファイル\Render</Filter>
+    </ClInclude>
+    <ClInclude Include="TitleRenderClass.h">
+      <Filter>ヘッダー ファイル\Render</Filter>
+    </ClInclude>
+    <ClInclude Include="DixComPtr.h">
+      <Filter>ヘッダー ファイル\OggVorbis</Filter>
+    </ClInclude>
+    <ClInclude Include="DixSmartPtr.h">
+      <Filter>ヘッダー ファイル\OggVorbis</Filter>
+    </ClInclude>
+    <ClInclude Include="OggDecoder.h">
+      <Filter>ヘッダー ファイル\OggVorbis</Filter>
+    </ClInclude>
+    <ClInclude Include="OggVorbisFile.h">
+      <Filter>ヘッダー ファイル\OggVorbis</Filter>
+    </ClInclude>
+    <ClInclude Include="OggVorbisMemory.h">
+      <Filter>ヘッダー ファイル\OggVorbis</Filter>
+    </ClInclude>
+    <ClInclude Include="OggVorbisResource.h">
+      <Filter>ヘッダー ファイル\OggVorbis</Filter>
+    </ClInclude>
+    <ClInclude Include="PCMDecoder.h">
+      <Filter>ヘッダー ファイル\OggVorbis</Filter>
+    </ClInclude>
+    <ClInclude Include="PCMPlayer.h">
+      <Filter>ヘッダー ファイル\OggVorbis</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

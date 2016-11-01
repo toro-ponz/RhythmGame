@@ -19,9 +19,9 @@ namespace Win {
 
 	private:
 		static LRESULT CALLBACK WinProc(HWND, UINT, WPARAM, LPARAM);
-		static bool g_appActive;
-		TCHAR szWinName[11] = _T("RhythmGame");
-		TCHAR szWinTitle[11] = _T("RhythmGame");
-		D3DPRESENT_PARAMETERS gl_d3dpp;
+		static bool isWindowActive;
+		TCHAR *windowName = _T("RhythmGame");
+		TCHAR *windowTitle = _T("RhythmGame");
+		D3DPRESENT_PARAMETERS D3DPresentParameters;
 	};
 }

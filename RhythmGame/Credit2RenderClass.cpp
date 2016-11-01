@@ -1,7 +1,7 @@
 #include "Credit2RenderClass.h"
-#include "InputDeviceClass.h"
+#include "InputDevice.h"
 
-extern BYTE g_FrameNo;
+extern BYTE FrameNumber;
 extern Device::InputDevice * inputDevice;
 
 using namespace DxSprite;
@@ -9,15 +9,14 @@ using namespace DxSprite;
 namespace Frame {
 	//コンストラクタ
 	Credit2Render::Credit2Render():
+			Logo     (_T("Data/img/cledit/logo1.png")),
+			Black    (_T("Data/img/color/black.png")),
 			x        (0),
 			flag     (false) {
-		Sprite = new DxSprite::SpriteDrawing[2];
-		Sprite[0].setTexture(_T("Data/img/credit/logo2.png"));
-		Sprite[1].setTexture(_T("Data/img/color/black.png"));
-		Sprite[1].setRect(1024, 768);
-		Sprite[0].setPosition(256.0, 320.0);
-		Sprite[1].setPosition(0.0, 0.0);
-		wv = new WavPlay(_T("Data/se/credit/logo2.wav"));
+		Logo.setPosition(0, 256.0f, 320.0f);
+		Black.setPosition(0, 0.0f, 0.0f);
+		Black.setRect(0, 1024, 768);
+		wv = new WavPlayer(_T("Data/se/credit/logo2.wav"));
 	}
 
 	//デストラクタ
@@ -28,27 +27,26 @@ namespace Frame {
 
 	//Rend関数
 	void Credit2Render::Rend(void) {
-		g_pSprite->Begin(NULL);
+		Sprite->Begin(NULL);
 
-		Sprite[0].Draw();
-		Sprite[1].Draw();
+		Logo.Draw();
 
 		if (!flag) {
-			if (!Sprite[1].addAlpha(-5)) flag = true;
+			if (!Black.addAlpha(-5)) flag = true;
 		}
 		else {
 			if (x == 0 && flag) {
-				wv->Play();
+				//wv->Play();
 			}
 			x++;
 			if (x > 100) {
-				if (!Sprite[1].addAlpha(5)) g_FrameNo = TITLE_INIT;
+				if (!Black.addAlpha(5)) FrameNumber = TITLE_INIT;
 			}
 		}
 
 		inputDevice->getPushState();
-		if (inputDevice->getPushStateAny(1)) g_FrameNo = TITLE_INIT;
+		if (inputDevice->getPushStateAny(1)) FrameNumber = TITLE_INIT;
 
-		g_pSprite->End();
+		Sprite->End();
 	}
 }

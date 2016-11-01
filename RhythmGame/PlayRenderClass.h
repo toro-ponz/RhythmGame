@@ -2,11 +2,9 @@
 
 #include <string>
 #include <vector>
-#include "SpriteDrawingClass2.h"
-#include "SpriteDrawingClass3.h"
-#include "InputDeviceClass.h"
-#include "OggPlayClass.h"
-#include "WavPlayClass.h"
+#include "SpriteDrawingClass.h"
+#include "InputDevice.h"
+#include "SoundPlayer.h"
 
 #define SONG_SELECT_INIT     25
 #define PAUSE_INIT           45
@@ -14,8 +12,7 @@
 
 using namespace Device;
 using namespace DxSprite;
-using namespace Ogg;
-using namespace Wav;
+using namespace Sound;
 using namespace std;
 
 namespace Frame {
@@ -27,61 +24,64 @@ namespace Frame {
 		int getResult(int);
 
 	private:
-		void Play(DWORD);
-		void JoyStick();
-		void judge(DWORD);
-		void calcScore();
-		void calcFPS(DWORD);
+		void Play();
+		void input();
+		void judge();
+		void calcScore(int);
+		void calcFPS();
 		void updateTitle();
-		void numDraw();
-		void SE(TCHAR *);
-		void Pause(DWORD);
-		void Restart(DWORD);
+		void figureDraw();
+		void playSoundEffect(TCHAR*);
+		void Pause();
+		void Restart();
 
-		SpriteDrawing2 * Notes;
-		SpriteDrawing3 Sprite;
-		SpriteDrawing2 Meter;
-		SpriteDrawing2 Pau;
-		SpriteDrawing2 Countdown;
-		OggPlay * Song;
+		SpriteDrawing Notes;
+		SpriteDrawing sprite;
+		SpriteDrawing Meter;
+		SpriteDrawing Pau;
+		SpriteDrawing Countdown;
+		OggPlayer * Song;
 
-		DWORD sTime;
-		DWORD oTime;
-		DWORD pTime = 0;
-		DWORD xTime;
-		DWORD fpsTime;
-		int start = 0;
-		int stop = 0;
-		int miss = 0;
-		int bad = 0;
-		int nice = 0;
-		int good = 0;
-		int great = 0;
-		int fps = 0;
-		int cfps = 0;
-		int score = 0;
-		int combo = 0;
-		int maxCombo = 0;
 		string songName;
-		string fileName;
-		int level;
-		int bpm;
-		int rhythm;
-		int speed;
-		int datacnt;
+		string songFileName;
 
-		vector<int> num;
-		vector<int> mode;
-		vector<int> dist1;
-		vector<int> dist2;
-		vector<int> nodule;
-		vector<int> rhythmnum;
-		vector<int> mom;
-		vector<int> son;
+		DWORD currentTime;
+		DWORD startTime;
+		DWORD previousTime;
+		DWORD pauseTime = 0;
+		DWORD countdownTime;
+		DWORD framePerSecondTime;
 
-		bool pause = false;
-		bool restart = false;
-		bool flag = false;
-		bool auto_play;
+		vector<int> notesNumber;
+		vector<int> notesMode;
+		vector<int> notesDirection;
+		vector<int> notesMeasure;
+		vector<int> notesRhythmNumber;
+		vector<int> notesDenominator;
+		vector<int> notesMolecule;
+
+		int notesDrawStart = 0;
+		int notesDrawStop = 0;
+		int statusMissCount = 0;
+		int statusBadCount = 0;
+		int statusNiceCount = 0;
+		int statusGoodCount = 0;
+		int statusGreatCount = 0;
+		int statusScore = 0;
+		int statusCurrentCombo = 0;
+		int statusMaxCombo = 0;
+		int framePerSecond = 0;
+		int framePerSecondCount = 0;
+		int scoreLevel;
+		int songBpm;
+		int songRhythm;
+		int notesMoveSpeed;
+		int dataRow = 0;
+		int notesCount = 0;
+
+		bool statePause = false;
+		bool stateRestart = false;
+		bool statePlay = false;
+		bool autoPlay;
 	};
 }

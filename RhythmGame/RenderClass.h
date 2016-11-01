@@ -23,7 +23,7 @@
 #include "ResultRenderClass.h"
 #include "ConfigRenderClass.h"
 
-extern BYTE g_FrameNo;
+extern BYTE FrameNumber;
 
 namespace Frame {
 	class Render {

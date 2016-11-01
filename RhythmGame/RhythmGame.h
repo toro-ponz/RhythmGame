@@ -1,6 +1,6 @@
 #pragma once
 #include "WindowClass.h"
-#include "InputDeviceClass.h"
+#include "InputDevice.h"
 
 using namespace Win;
 using namespace Device;
@@ -9,13 +9,13 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int);
 
 HWND hWnd;
 
-LPDIRECTINPUT8 Device::Joystick::lpDI;
-LPDIRECTINPUTDEVICE8 Device::Joystick::lpDIDevice;
+LPDIRECTINPUT8 Device::Joystick::DirectInput8;
+LPDIRECTINPUTDEVICE8 Device::Joystick::DirectInputDevice8;
 Render * Win::Window::Render;
-bool Win::Window::g_appActive;
+bool Win::Window::isWindowActive;
 
-LPDIRECT3DDEVICE9 gl_lpD3ddev;
-LPDIRECT3D9 gl_lpD3d = NULL;
-LPD3DXSPRITE g_pSprite;
-BYTE g_FrameNo;
-InputDevice * inputDevice;
+LPDIRECT3DDEVICE9 Direct3DDevice9;
+LPDIRECT3D9 Direct3D9 = NULL;
+LPD3DXSPRITE Sprite;
+BYTE FrameNumber;
+InputDevice *inputDevice;
