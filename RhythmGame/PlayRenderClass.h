@@ -3,47 +3,56 @@
 #include <string>
 #include <vector>
 #include "SpriteDrawingClass.h"
+#include "FontTextureCreateClass.h"
 #include "InputDevice.h"
 #include "SoundPlayer.h"
-
-#define SONG_SELECT_INIT     25
-#define PAUSE_INIT           45
-#define RESULT_INIT          50
 
 using namespace Device;
 using namespace DxSprite;
 using namespace Sound;
-using namespace std;
+using namespace Font;
+
+using std::string;
+using std::vector;
 
 namespace Frame {
 	class PlayRender {
 	public:
-		PlayRender(int);
+		PlayRender(string, int);
 		~PlayRender();
-		void Rend(void);
+		void Rend();
 		int getResult(int);
 
 	private:
-		void Play();
+		void wait();
+		void play();
+		void pause();
+		void restart();
 		void input();
 		void judge();
+		void draw();
 		void calcScore(int);
 		void calcFPS();
 		void updateTitle();
 		void figureDraw();
-		void playSoundEffect(TCHAR*);
-		void Pause();
-		void Restart();
+		void playSoundEffect(string);
 
-		SpriteDrawing Notes;
-		SpriteDrawing sprite;
-		SpriteDrawing Meter;
-		SpriteDrawing Pau;
-		SpriteDrawing Countdown;
-		OggPlayer * Song;
+		SpriteDrawing notes;
+		SpriteDrawing userInterfaceOne;
+		SpriteDrawing userInterfaceTwo;
+		SpriteDrawing target;
+		SpriteDrawing figures;
+		SpriteDrawing judgeImage;
+		SpriteDrawing pauseMenu;
+		SpriteDrawing meter;
+		SpriteDrawing countdown;
+		SpriteDrawing background;
+
+		FontTextureCreate fontTexture;
+		
+		OggPlayer *Song;
 
 		string songName;
-		string songFileName;
 
 		DWORD currentTime;
 		DWORD startTime;
@@ -72,16 +81,30 @@ namespace Frame {
 		int statusMaxCombo = 0;
 		int framePerSecond = 0;
 		int framePerSecondCount = 0;
-		int scoreLevel;
+		int sheetLevel;
 		int songBpm;
 		int songRhythm;
 		int notesMoveSpeed;
 		int dataRow = 0;
 		int notesCount = 0;
 
-		bool statePause = false;
-		bool stateRestart = false;
-		bool statePlay = false;
 		bool autoPlay;
+
+		enum STATE {
+			STATE_NONE,
+			STATE_WAIT,
+			STATE_PLAY,
+			STATE_PAUSE,
+			STATE_RESTART,
+			STATE_FINISH
+		} state;
+		enum NOTES_DIRECTION {
+			DIRECTION_FROM_TOP = 1,
+			DIRECTION_FROM_BOTTOM,
+			DIRECTION_FROM_LEFT,
+			DIRECTION_FROM_RIGHT,
+			DIRECTION_FROM_TOP_LEFT,
+			DIRECTION_FROM_TOP_RIGHT
+		};
 	};
 }

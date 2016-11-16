@@ -4,7 +4,6 @@
 #include <stdio.h>
 #include "RenderClass.h"
 
-#define WINMODE             TRUE
 #define SCREEN_WIDTH        1024
 #define SCREEN_HEIGHT        768
 
@@ -15,13 +14,19 @@ namespace Win {
 	public:
 		Window(HINSTANCE, int);
 		~Window();
-		static Render * Render;
+		void Rend();
+		bool getRendering();
+		Render Render;
 
 	private:
+		void loadWindowSettings();
 		static LRESULT CALLBACK WinProc(HWND, UINT, WPARAM, LPARAM);
 		static bool isWindowActive;
 		TCHAR *windowName = _T("RhythmGame");
 		TCHAR *windowTitle = _T("RhythmGame");
 		D3DPRESENT_PARAMETERS D3DPresentParameters;
+		bool windowMode;
+		bool vSync;
+		bool rendering = false;
 	};
 }

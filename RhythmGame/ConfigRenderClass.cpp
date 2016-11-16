@@ -1,17 +1,14 @@
 #include "ConfigRenderClass.h"
 #include "InputDevice.h"
-
-extern BYTE FrameNumber;
-extern Device::InputDevice * inputDevice;
-extern HWND hWnd;
-
-using namespace DxSprite;
+#include "GlobalVariable.h"
 
 namespace Frame {
-	//コンストラクタ
+	/**
+	*  コンストラクタ
+	*/
 	ConfigRender::ConfigRender() :
-			Title     (_T("Data/img/config/title.png")),
-			Buttons   (_T("Data/img/config/buttons.png")) {
+			Title(configImageDirectoryPath + "title.png"),
+			Buttons(configImageDirectoryPath + "buttons.png") {
 		//Sprite[0].setPosition(0.0, 0.0);
 		//Sprite[1].setPosition(512.0, -70.0);
 		//Sprite[2].setPosition(768.0, -70.0);
@@ -19,12 +16,16 @@ namespace Frame {
 		//Sprite[4].setPosition(845.0, 512.0);
 	}
 
-	//デストラクタ
+	/**
+	*  デストラクタ
+	*/
 	ConfigRender::~ConfigRender() {
 
 	}
 
-	//Rend関数
+	/**
+	*  描画する関数.
+	*/
 	void ConfigRender::Rend(void) {
 		Sprite->Begin(NULL);
 
@@ -35,7 +36,8 @@ namespace Frame {
 		//Sprite[4].Draw();
 
 		inputDevice->getPushState();
-		if (inputDevice->getPushStateAny(1)) FrameNumber = SONG_SELECT_INIT;
+		if (inputDevice->getPushStateAny(InputDevice::KEY_STATE::STATE_PUSH))
+			frameNumber.setFrameNumber(FrameNumber::FRAME_NUMBER::SONG_SELECT_INIT);
 
 		Sprite->End();
 	}

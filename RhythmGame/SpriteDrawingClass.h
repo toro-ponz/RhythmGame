@@ -1,46 +1,61 @@
 #pragma once
+
+#include "GlobalVariable.h"
+#include <string>
+#include <vector>
 #include <tchar.h>
 #include <d3d9.h>
 #include <d3dx9.h>
-#include <string>
-#include <vector>
 
-extern LPDIRECT3DDEVICE9 Direct3DDevice9;
-extern LPD3DXSPRITE Sprite;
-
-using namespace std;
+using std::vector;
+using std::string;
 
 namespace DxSprite {
 	class SpriteDrawing {
 	public:
-		SpriteDrawing(int = 1, float = 32.0f);
-		SpriteDrawing(TCHAR*, int = 1, float = 32.0f);
+		SpriteDrawing(int = 1, float = 32.0f, float = -1);
+		SpriteDrawing(TCHAR*, int = 1, float = 32.0f, float = -1);
+		SpriteDrawing(string, int = 1, float = 32.0f, float = -1);
+		SpriteDrawing(LPDIRECT3DTEXTURE9, int = 1, float = 32.0f, float = -1);
 		~SpriteDrawing();
 		HRESULT setTexture(TCHAR*);
+		HRESULT setTexture(string);
 		void setTexture(LPDIRECT3DTEXTURE9);
-		void setRect(int, LONG, LONG, LONG = 0, LONG = 0);
-		void setRectC(int, int, int);
-		void setCenter(int = 0, float = 0, float = 0, float = 0);
-		void setPosition(int = 0, float = 0, float = 0, float = 0);
-		void setColor(D3DCOLOR, int = 0);
-		float addPositionX(float, int = 0);
-		float addPositionY(float, int = 0);
-		bool addAlpha(int, int = 0);
-		void disableDraw(int = 0);
-		void enableDraw(int = 0);
-		void setTile(float);
+		void setRectFromPixel(int, LONG, LONG, LONG, LONG);
+		void setRectFromChip(int, int, int = -1);
+		void setCenter(int, float = 0.0f, float = 0.0f, float = 0.0f);
+		void setPosition(int, float = 0.0f, float = 0.0f, float = 0.0f);
+		void setColor(int, D3DCOLOR);
+		float addPositionX(int, float);
+		float addPositionY(int, float);
+		bool addAlpha(int, int);
+		void addAlpha(int, DWORD*, int);
+		void setAnimationInterval(int, int, int, DWORD*, unsigned int, unsigned int, DWORD = 0);
+		void disableDraw(int);
+		void enableDraw(int);
+		void setChipPixel(float = 32.0f, float = -1);
 		void reserve(int);
 		void Draw();
 
 	private:
-		LPDIRECT3DTEXTURE9 tex;
-		vector<RECT> rec;
-		vector<D3DXVECTOR3> cen;
-		vector<D3DXVECTOR3> pos;
+		void initialize();
+		void culcAnimation(int, DWORD);
+		LPDIRECT3DTEXTURE9 texture = NULL;
+		vector<RECT> rect;
+		vector<D3DXVECTOR3> center;
+		vector<D3DXVECTOR3> position;
 		vector<D3DCOLOR> color;
-		vector<bool> draw;
-		int num;
-		unsigned int texWidth, texHeight;
-		float tilePixel;
+		vector<DWORD> animationOldTime;
+		vector<DWORD> animationWait;
+		vector<vector<DWORD>> animationInterval;
+		vector<int> animationIntervalSuffix;
+		vector<int> animationChipStart;
+		vector<int> animationChipEnd;
+		vector<bool> animationEnabled;
+		vector<int> alpha;
+		vector<bool> drawEnabled;
+		int elementCount;
+		unsigned int textureWidth, textureHeight;
+		float chipPixelX, chipPixelY;
 	};
 }

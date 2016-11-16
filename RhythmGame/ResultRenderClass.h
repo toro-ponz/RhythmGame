@@ -1,5 +1,9 @@
 #pragma once
 #include <string>
+#include <fstream>
+#include <sstream>
+#include <iostream>
+#include <iomanip>
 #include "SpriteDrawingClass.h"
 #include "InputDevice.h"
 

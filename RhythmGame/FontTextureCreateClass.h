@@ -14,22 +14,35 @@ using namespace DxSprite;
 namespace Font {
 	class FontTextureCreate {
 	public:
-		FontTextureCreate(TCHAR*, int, int, TCHAR*, float, float, bool);
+		FontTextureCreate();
 		~FontTextureCreate();
 		void Rend();
-		void FontCreate(TCHAR*, int);
-		void setFontStatus(int, int, TCHAR);
-
-	protected:
+		void fontCreate(string, float, float, int, int, string, bool = true);
+		void setPosition(float, float);
+		void disableDraw();
+		void enableDraw();
+		void setColor(D3DCOLOR);
 
 	private:
-		//SpriteDrawing * Sprite;
-		LOGFONT lf;
-		LPDIRECT3DTEXTURE9 pTex;
+		void FontCreate(wchar_t*);
+		void setFontStatus(int, int, string);
+
+		SpriteDrawing fontTextures;
+		LOGFONT logFont;
+		LPDIRECT3DTEXTURE9 pTex = NULL;
+		float startPositionX;
+		float startPositionY;
 		int fontSize;
 		int fontWeight;
-		int len;
-		float tx, ty;
+		int lettersLength;
+		bool isHorizontal;
+
+		vector<TEXTMETRIC> textMetric;
+		vector<GLYPHMETRICS> glyphMetrics;
+		vector<vector<BYTE>> monochrome;
+
+		UINT maxGmBlackBoxX = 0;
+		UINT maxGmBlackBoxY = 0;
 
 		struct Vtx {
 			float x, y, z;

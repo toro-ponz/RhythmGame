@@ -3,8 +3,6 @@
 #include "SpriteDrawingClass.h"
 #include "SoundPlayer.h"
 
-#define TITLE_INIT           20
-
 using namespace DxSprite;
 using namespace Sound;
 
@@ -16,10 +14,9 @@ namespace Frame {
 		void Rend(void);
 
 	private:
-		SpriteDrawing Logo;
+		SpriteDrawing Description;
 		SpriteDrawing Black;
-		WavPlayer * wv;
-		int x;
-		bool flag;
+		DWORD oldTime;
+		int state;
 	};
 }

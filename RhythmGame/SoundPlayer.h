@@ -1,11 +1,12 @@
 #pragma once
 #pragma comment ( lib, "dxguid.lib" )
 #pragma comment ( lib, "dsound.lib" )
+
 #include <dsound.h>
 #include <string>
 #include "PCMPlayer.h"
 
-using namespace std;
+using std::string;
 
 namespace Sound {
 	class OggPlayer {
@@ -14,7 +15,7 @@ namespace Sound {
 		~OggPlayer();
 		bool Play(bool);
 		void Pause();
-		int getState();
+		Dix::PCMPlayer::STATE getState();
 
 	private:
 		IDirectSound8 * pDS8;

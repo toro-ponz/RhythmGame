@@ -2,12 +2,11 @@
 
 #include "SpriteDrawingClass.h"
 #include "FontTextureCreateClass.h"
+#include <windows.h>
+#include <string>
+#include <iostream>
 
-#define PLAY_EASY_INIT       30
-#define PLAY_NORMAL_INIT     35
-#define PLAY_HARD_INIT       40
-#define CONFIG_INIT          55
-
+using std::string;
 using namespace DxSprite;
 using namespace Font;
 
@@ -16,18 +15,49 @@ namespace Frame {
 	public:
 		SongSelectRender();
 		~SongSelectRender();
-		void Rend(void);
+		void Rend();
+		int getSelectedSheetLevel();
+		string getSelectedSongName();
+		int selectedSheetlevel;
+		string selectedSongName;
 
 	private:
+		bool searchDirectory();
+		bool loadSaveData();
+		void setSongNameFontPosition(int);
+		
+		SpriteDrawing Background;
 		SpriteDrawing Title;
 		SpriteDrawing Buttons;
+		SpriteDrawing SongFrame;
 		SpriteDrawing Back;
-		SpriteDrawing Level;
 		SpriteDrawing Cursor;
+		SpriteDrawing LevelSelect;
+		SpriteDrawing LevelCursor;
+		SpriteDrawing OnOff;
 		SpriteDrawing Black;
-		//FontTextureCreate * ftc1;
-		int sNum = 1;//ã»î‘çÜ
-		int SCE = 0;//ï™äÚ
-		int level = 1;
+
+		vector<FontTextureCreate> fontTexture;
+
+		vector<string> songName;
+		vector<vector<int>> sheetStars;
+		vector<vector<int>> sheetLevel;
+		vector<vector<int>> sheetPlayState;
+		vector<vector<int>> score;
+
+		int songCount = 1;
+		int songNumber = 1;
+		int scrollSongNumber = 1;
+		int cursorNumber = 1;
+
+		bool autoPlay;
+		bool customSkin;
+
+		enum class STATE {
+			SONG_SELECT,
+			LEVEL_SELECT,
+			CONFIG,
+			EXIT
+		} state;
 	};
 }

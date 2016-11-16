@@ -1,6 +1,5 @@
-#define _CRT_SECURE_NO_WARNINGS
-
 #include "PlayRenderClass.h"
+#include "GlobalVariable.h"
 #include <time.h>
 #include <fstream>
 #include <sstream>
@@ -8,30 +7,41 @@
 #include <string>
 #include <iomanip>
 
-extern BYTE FrameNumber;
-extern InputDevice * inputDevice;
-extern HWND hWnd;
-
-using namespace DxSprite;
+using std::ifstream;
+using std::istringstream;
+using std::ostringstream;
+using std::to_string;
+using std::getline;
+using std::setfill;
+using std::setw;
 
 namespace Frame {
-	//コンストラクタ
-	PlayRender::PlayRender(int lv) :
-			sprite		(_T("Data/img/play/chip01.png"), 29, 32.0f),
-			Notes       (_T("Data/img/play/notes.png"), 1, 64.0f),
-			Meter		(1),
-			Pau			(1),
-			Countdown	(1) {
-		string sheetFile = "Data/songs/Sample/Sample_" + to_string(lv) + ".dat";
-		ifstream ifs(sheetFile);
+	/**
+	*  コンストラクタ
+	*/
+	PlayRender::PlayRender(string name, int level) :
+			notes(playImageDirectoryPath + "notes.png", 1, 64.0f),
+			userInterfaceOne(playImageDirectoryPath + "ui1.png"),
+			userInterfaceTwo(playImageDirectoryPath + "ui2.png"),
+			target(playImageDirectoryPath + "target.png", 7, 128.0f),
+			figures(playImageDirectoryPath + "figures.png", 14, 32.0f),
+			judgeImage(playImageDirectoryPath + "judge.png", 1, 128.0f, 64.0f),
+			pauseMenu(playImageDirectoryPath + "pause.png"),
+			countdown(playImageDirectoryPath + "countdown.png", 1, 256.0f),
+			meter(colorDirectoryPath + "red.png"),
+			background() {
+		const string songDirectory = songsDirectoryPath + name + "/";
+		const string sheetPath = songDirectory + name + "_" + to_string(level) + ".dat";
+		const string backgroundImagePath = songDirectory + "background.png";
+		const string musicPath = songDirectory + name + ".ogg";
 
+		ifstream ifs(sheetPath);
 		string str, tmp;
 		getline(ifs, str);
 		istringstream stream(str);
 		getline(stream, songName, ',');
-		getline(stream, songFileName, ',');
 		getline(stream, tmp, ',');
-		scoreLevel = atoi(tmp.c_str());
+		sheetLevel = atoi(tmp.c_str());
 		getline(stream, tmp, ',');
 		songBpm = atoi(tmp.c_str());
 		getline(stream, tmp, ',');
@@ -51,7 +61,7 @@ namespace Frame {
 		notesDenominator.reserve(notesCount);
 		notesMolecule.reserve(notesCount);
 
-		Notes.reserve(notesCount);
+		notes.reserve(notesCount);
 
 		for (int i = 0; i < notesCount; i++) {
 			int doubleNotesDirection = 0;
@@ -73,8 +83,9 @@ namespace Frame {
 			notesDenominator.push_back(atoi(tmp.c_str()));
 			getline(stream, tmp, ';');
 			notesMolecule.push_back(atoi(tmp.c_str()));
-			Notes.setCenter(i, 32.0f, 32.0f);
-			Notes.setRectC(i, notesDirection[i], notesDirection[i]);
+			notes.setRectFromChip(i, notesDirection[i]);
+			notes.setCenter(i, 32.0f, 32.0f);
+			notes.disableDraw(i);
 			if (doubleNotesDirection) {
 				notesNumber.push_back(notesNumber[i]);
 				notesMode.push_back(notesMode[i]);
@@ -83,123 +94,136 @@ namespace Frame {
 				notesRhythmNumber.push_back(notesRhythmNumber[i]);
 				notesDenominator.push_back(notesDenominator[i]);
 				notesMolecule.push_back(notesMolecule[i]);
-				Notes.setCenter(i, 32.0f, 32.0f);
-				Notes.setRectC(i, notesDirection[i] + 8, notesDirection[i] + 8);
+				notes.setRectFromChip(i, notesDirection[i] + 8);
 				i++;
-				Notes.setCenter(i, 32.0f, 32.0f);
-				Notes.setRectC(i, notesDirection[i] + 8, notesDirection[i] + 8);
+				notes.setRectFromChip(i, notesDirection[i] + 8);
+				notes.setCenter(i, 32.0f, 32.0f);
+				notes.disableDraw(i);
 			}
 		}
 
-		sprite.setRectC(0, 1, 740);
-		sprite.setRect(1, 256, 768, 128, 0);
-		sprite.setRect(2, 32, 800, 0, 768);
-		sprite.setRect(3, 32, 800, 0, 768);
-		sprite.setRect(4, 32, 800, 0, 768);
-		sprite.setRect(5, 32, 800, 0, 768);
-		sprite.setRect(6, 128, 896, 0, 864);
-		sprite.setRect(7, 32, 928, 0, 896);
-		sprite.setRect(8, 32, 928, 0, 896);
-		sprite.setRect(9, 32, 928, 0, 896);
-		sprite.setRect(10, 32, 928, 0, 896);
-		sprite.setRect(11, 32, 928, 0, 896);
-		sprite.setRect(12, 32, 928, 0, 896);
-		sprite.setRect(13, 32, 928, 0, 896);
-		sprite.setRect(14, 32, 928, 0, 896);
-		sprite.setRect(15, 32, 1024, 0, 992);
-		sprite.setRect(16, 64, 1024, 32, 992);
-		sprite.setRect(17, 96, 1024, 64, 992);
-		sprite.setRect(18, 128, 1024, 96, 992);
-		sprite.setRect(19, 96, 992, 64, 960);
-		sprite.setRect(20, 128, 992, 96, 960);
-		sprite.setRect(21, 256, 1024, 128, 960);
-		sprite.setRect(22, 1024, 768, 256, 0);
-		sprite.setRect(23, 384, 896, 256, 768);
-		sprite.setRect(24, 384, 896, 256, 768);
-		sprite.setRect(25, 384, 896, 256, 768);
-		sprite.setRect(26, 384, 896, 256, 768);
-		sprite.setRect(27, 384, 896, 256, 768);
-		sprite.setRect(28, 384, 896, 256, 768);
-		sprite.setPosition(0, 0.0f, 0.0f);
-		sprite.setPosition(1, 896.0f, 0.0f);
-		for (int i = 0; i < 5; i++) {
-			sprite.setPosition(i + 2, (float)(650.0 + (i * 23.0)), 580.0);
-		}
-		for (int i = 0; i < 8; i++) {
-			sprite.setPosition(i + 7, (float)(700.0 + (i * 20.0)), (float)(768.0 - 40.0));
-		}
-		sprite.setPosition(15, 128.0, 700.0);
-		sprite.setPosition(16, 128.0 + 32.0, 700.0);
-		sprite.setPosition(17, 128.0 + 64.0, 700.0);
-		sprite.setPosition(18, 128.0 + 96.0, 700.0);
-		sprite.setPosition(19, 128.0 + 128.0, 700.0);
-		sprite.setPosition(20, 128.0 + 160.0, 700.0);
-		sprite.setPosition(21, 768.0, 512.0);
-		sprite.setPosition(22, 128.0f, 0.0f);
+		target.setRectFromChip(0, 1);
+		target.setRectFromChip(1, 1);
+		target.setRectFromChip(2, 1);
+		target.setRectFromChip(3, 1);
+		target.setRectFromChip(4, 1);
+		target.setRectFromChip(5, 1);
+		target.setRectFromChip(6, 2);
+		target.setPosition(0, 512.0f, 352.0f);
+		target.setPosition(1, 512.0f, 416.0f);
+		target.setPosition(2, 480.0f, 384.0f);
+		target.setPosition(3, 544.0f, 384.0f);
+		target.setPosition(4, 480.0f, 352.0f);
+		target.setPosition(5, 544.0f, 352.0f);
+		target.setPosition(6, 512.0f, 384.0f);
+		target.setCenter(0, 64.0f, 64.0f);
+		target.setCenter(1, 64.0f, 64.0f);
+		target.setCenter(2, 64.0f, 64.0f);
+		target.setCenter(3, 64.0f, 64.0f);
+		target.setCenter(4, 64.0f, 64.0f);
+		target.setCenter(5, 64.0f, 64.0f);
+		target.setCenter(6, 64.0f, 64.0f);
+		target.disableDraw(0);
+		target.disableDraw(1);
+		target.disableDraw(2);
+		target.disableDraw(3);
+		target.disableDraw(4);
+		target.disableDraw(5);
 
-		sprite.setPosition(23, 512.0f, 352.0f);
-		sprite.setPosition(24, 512.0f, 416.0f);
-		sprite.setPosition(25, 544.0f, 384.0f);
-		sprite.setPosition(26, 480.0f, 384.0f);
-		sprite.setPosition(27, 544.0f, 352.0f);
-		sprite.setPosition(28, 480.0f, 352.0f);
+		figures.setRectFromChip(4, 13, 16);
+		figures.setRectFromChip(13, 29, 32);
+		figures.setPosition(0, 790.0f, 0.0f);
+		figures.setPosition(1, 790.0f + 25.0f, 0.0f);
+		figures.setPosition(2, 790.0f + 50.0f, 0.0f);
+		figures.setPosition(3, 790.0f + 75.0f, 0.0f);
+		figures.setPosition(4, 767.0f, 32.0f);
+		figures.setPosition(5, 690.0f, 736.0f);
+		figures.setPosition(6, 690.0f + 25.0f, 736.0f);
+		figures.setPosition(7, 690.0f + 50.0f, 736.0f);
+		figures.setPosition(8, 690.0f + 75.0f, 736.0f);
+		figures.setPosition(9, 690.0f + 100.0f, 736.0f);
+		figures.setPosition(10, 690.0f + 125.0f, 736.0f);
+		figures.setPosition(11, 690.0f + 150.0f, 736.0f);
+		figures.setPosition(12, 690.0f + 175.0f, 736.0f);
+		figures.setPosition(13, 767.0f, 704.0f);
 
-		sprite.setCenter(23, 64.0f, 64.0f);
-		sprite.setCenter(24, 64.0f, 64.0f);
-		sprite.setCenter(25, 64.0f, 64.0f);
-		sprite.setCenter(26, 64.0f, 64.0f);
-		sprite.setCenter(27, 64.0f, 64.0f);
-		sprite.setCenter(28, 64.0f, 64.0f);
+		judgeImage.setPosition(0, 750.0f, 400.0f);
+		judgeImage.disableDraw(0);
 
-		sprite.disableDraw(21);
+		pauseMenu.setPosition(0, 512.0f, 384.0f);
+		pauseMenu.setCenter(0, 243.5f, 48.0f);
+		pauseMenu.disableDraw(0);
 
-		Meter.setTexture(_T("Data/img/color/red.png"));
-		Meter.setCenter(0, 128.0, 768.0);
-		Meter.setPosition(0, 1024.0, 768.0);
-		Meter.enableDraw(0);
+		meter.setCenter(0, 128.0f, 768.0f);
+		meter.setPosition(0, 1024.0f, 768.0f);
+		meter.enableDraw(0);
 
-		Pau.setTexture(_T("Data/img/play/pause.png"));
-		Pau.setCenter(0, 256.0f, 128.0f);
-		Pau.setPosition(0, 512.0f, 384.0f);
-		Pau.enableDraw(0);
+		countdown.setCenter(0, 128.0f, 128.0f);
+		countdown.setPosition(0, 512.0f, 384.0f);
+		countdown.disableDraw(0);
 
-		Countdown.setTexture(_T("Data/img/play/cntdwn.png"));
-		Countdown.setCenter(0, 128.0f, 128.0f);
-		Countdown.setPosition(0, 512.0f, 384.0f);
-		Countdown.enableDraw(0);
+		background.setTexture(backgroundImagePath);
+		background.setPosition(0, 128.0f, 0.0f);
+		background.enableDraw(0);
 
-		TCHAR buf[100];
-		GetPrivateProfileString(_T("common"), _T("autoplay"), _T("ON"), buf, sizeof(buf), _T("Data/conf.ini"));
-		if (!wcscmp(buf, _T("ON"))) autoPlay = true;
+		const string fontName = "メイリオ";
+		const int songNameFontSize = 60;
+		const int songNameFontWeight = 1;
+		fontTexture.fontCreate(songName, 50.0f, 30.0f, songNameFontSize, songNameFontWeight, fontName, false);
+		fontTexture.setColor(D3DCOLOR_ARGB(255, 135, 222, 255));
+
+		TCHAR buf[256];
+		GetPrivateProfileString(_T("play"), _T("autoplay"), _T("ON"), buf, sizeof(buf), convertStringToTchar(configFilePath));
+		if (!_tcscmp(buf, _T("ON"))) autoPlay = true;
 		else autoPlay = false;
 
-		string musicFile = "Data/songs/" + songName + "/" + songFileName;
-		Song = new OggPlayer(musicFile.c_str());
+		Song = new OggPlayer(musicPath.c_str());
 		startTime = timeGetTime();
+
+		state = STATE_WAIT;
 	}
 
-	//デストラクタ
+	/**
+	*  デストラクタ
+	*/
 	PlayRender::~PlayRender() {
 		delete Song;
 	}
 
-	//Rend関数
-	void PlayRender::Rend(void) {
-		Sprite->Begin(NULL);
+	/**
+	*  描画する関数.
+	*/
+	void PlayRender::Rend() {
 		currentTime = timeGetTime();
+		Sprite->Begin(NULL);
 		inputDevice->getPushState();
-		if (!statePause) {
-			Play();
+
+		switch (state) {
+		case STATE_WAIT:
+			wait();
+			break;
+		case STATE_PLAY:
+			play();
+			break;
+		case STATE_PAUSE:
+			pause();
+			break;
+		case STATE_RESTART:
+			restart();
+			break;
+		default:
+			break;
 		}
-		else {
-			if (!stateRestart) Pause();
-			else Restart();
-		}
-		previousTime = currentTime;
+
 		Sprite->End();
+		previousTime = currentTime;
 	}
 
-	//getResult関数
+	/**
+	*  プレイ結果を返す関数.
+	*  @param mode<int> 
+	*  @return<int> 結果
+	*/
 	int PlayRender::getResult(int mode) {
 		int result;
 		switch (mode) {
@@ -231,15 +255,26 @@ namespace Frame {
 		return result;
 	}
 
-	//Play関数
-	void PlayRender::Play() {
+	/**
+	*  演奏が始まるまで待つ関数.
+	*/
+	void PlayRender::wait() {
+		calcFPS();
+		updateTitle();
+		draw();
 		//notesMoveSpeedミリ秒待ってから再生開始
-		if (Song->getState() != Dix::PCMPlayer::STATE_PLAY && !statePlay && ((int)(currentTime - startTime + pauseTime) >= notesMoveSpeed)) {
+		if (Song->getState() != Dix::PCMPlayer::STATE_PLAY && ((int)(currentTime - startTime + pauseTime) >= notesMoveSpeed)) {
 			Song->Play(false);
-			statePlay = true;
 			startTime = timeGetTime() - notesMoveSpeed;
+			state = STATE_PLAY;
+			play();
 		}
+	}
 
+	/**
+	*  演奏中の関数.
+	*/
+	void PlayRender::play() {
 		while (true) {
 			if (notesDrawStop != notesCount) {
 				DWORD songTime = (DWORD)((notesMeasure[notesDrawStop] - 1) * (60 * 1000) / songBpm * 4);
@@ -249,25 +284,25 @@ namespace Frame {
 
 				if (songTime <= (currentTime - startTime - pauseTime)) {
 					float plus = (float)((currentTime - startTime - pauseTime - songTime) * 384.0 / notesMoveSpeed);
-					Notes.enableDraw(notesDrawStop);
+					notes.enableDraw(notesDrawStop);
 					switch (notesDirection[notesDrawStop]) {
-					case 1:
-						Notes.setPosition(notesDrawStop, 512.0f, -32.0f + plus);
+					case DIRECTION_FROM_TOP:
+						notes.setPosition(notesDrawStop, 512.5f, -32.0f + plus);
 						break;
-					case 2:
-						Notes.setPosition(notesDrawStop, 512.0f, (768.0f + 32.0f) - plus);
+					case DIRECTION_FROM_BOTTOM:
+						notes.setPosition(notesDrawStop, 512.5f, (768.0f + 32.0f) - plus);
 						break;
-					case 3:
-						Notes.setPosition(notesDrawStop, (896.0f + 32.0f) - plus, 384.0f);
+					case DIRECTION_FROM_LEFT:
+						notes.setPosition(notesDrawStop, (128.0f - 32.0f) + plus, 384.5f);
 						break;
-					case 4:
-						Notes.setPosition(notesDrawStop, (128.0f - 32.0f) + plus, 384.0f);
+					case DIRECTION_FROM_RIGHT:
+						notes.setPosition(notesDrawStop, (896.0f + 32.0f) - plus, 384.5f);
 						break;
-					case 5:
-						Notes.setPosition(notesDrawStop, 896.0f + 32.0f - plus, -32.0f + plus);
+					case DIRECTION_FROM_TOP_LEFT:
+						notes.setPosition(notesDrawStop, 512.5f - (float)(384.5f / sqrt(2)) - 32.0f + plus, 384.5f - (float)(384.5f / sqrt(2)) - 32.0f + plus);
 						break;
-					case 6:
-						Notes.setPosition(notesDrawStop, 128.0f - 32.0f + plus, -32.0f + plus);
+					case DIRECTION_FROM_TOP_RIGHT:
+						notes.setPosition(notesDrawStop, 512.5f + (float)(384.5f / sqrt(2)) + 32.0f - plus, 384.5f - (float)(384.5f / sqrt(2)) - 32.0f + plus);
 						break;
 					}
 					notesDrawStop++;
@@ -284,94 +319,179 @@ namespace Frame {
 		if (notesDrawStart != notesDrawStop) judge();
 		calcFPS();
 		updateTitle();
-		figureDraw();
-		Notes.Draw();
-		Meter.Draw();
-		sprite.Draw();
+		draw();
 
 		previousTime = currentTime;
 		//曲が終了したらリザルト画面のフレームへ
-		if (statePlay && Song->getState() != Dix::PCMPlayer::STATE_PLAY && Song->getState() != Dix::PCMPlayer::STATE_PAUSE) {
-			FrameNumber = RESULT_INIT;
+		if (state == STATE_PLAY && Song->getState() != Dix::PCMPlayer::STATE_PLAY && Song->getState() != Dix::PCMPlayer::STATE_PAUSE) {
+			frameNumber.setFrameNumber(FrameNumber::FRAME_NUMBER::RESULT_INIT);
 		}
 	}
 
-	//input関数
+	/**
+	*  一時停止中の関数.
+	*/
+	void PlayRender::pause() {
+		//再生を止める
+		if (Song->getState() == Dix::PCMPlayer::STATE_PLAY) {
+			Song->Pause();
+			countdownTime = timeGetTime();
+		}
+		calcFPS();
+		updateTitle();
+		draw();
+
+		//STARTSELECT同時押しで再開カウントダウンへ
+		if ((inputDevice->getPushState(InputDevice::KEY::BUTTON_SELECT, InputDevice::KEY_STATE::STATE_HAVE_PUSHED) &&
+			inputDevice->getPushState(InputDevice::KEY::BUTTON_START, InputDevice::KEY_STATE::STATE_PUSH)) ||
+			(inputDevice->getPushState(InputDevice::KEY::BUTTON_SELECT, InputDevice::KEY_STATE::STATE_PUSH) &&
+			inputDevice->getPushState(InputDevice::KEY::BUTTON_START, InputDevice::KEY_STATE::STATE_HAVE_PUSHED))) {
+			state = STATE_RESTART;
+			pauseMenu.disableDraw(0);
+			countdown.enableDraw(0);
+			pauseTime += currentTime - countdownTime;
+			countdownTime = timeGetTime();
+		}
+
+		//LR同時押しでSONGSELECTへ
+		if ((inputDevice->getPushState(InputDevice::KEY::TRIGGER_LEFT, InputDevice::KEY_STATE::STATE_HAVE_PUSHED) &&
+			inputDevice->getPushState(InputDevice::KEY::TRIGGER_RIGHT, InputDevice::KEY_STATE::STATE_PUSH)) ||
+			(inputDevice->getPushState(InputDevice::KEY::TRIGGER_LEFT, InputDevice::KEY_STATE::STATE_PUSH) &&
+			inputDevice->getPushState(InputDevice::KEY::TRIGGER_RIGHT, InputDevice::KEY_STATE::STATE_HAVE_PUSHED))) {
+			frameNumber.setFrameNumber(FrameNumber::FRAME_NUMBER::SONG_SELECT_INIT);
+		}
+	}
+
+	/**
+	*  一時停止から再開中の関数.
+	*/
+	void PlayRender::restart() {
+		//5秒待って再開
+		if (currentTime > countdownTime + 5000) {
+			state = STATE_PLAY;
+			countdown.disableDraw(0);
+			Song->Play(false);
+			pauseTime += currentTime - countdownTime;
+		}
+		else if (currentTime > countdownTime + 4000)
+			countdown.setRectFromChip(0, 1);
+		else if (currentTime > countdownTime + 3000)
+			countdown.setRectFromChip(0, 2);
+		else if (currentTime > countdownTime + 2000)
+			countdown.setRectFromChip(0, 3);
+		else if (currentTime > countdownTime + 1000)
+			countdown.setRectFromChip(0, 4);
+		else
+			countdown.setRectFromChip(0, 5);
+
+		calcFPS();
+		updateTitle();
+		draw();
+
+		//LR同時押しでPause画面に戻る
+		if ((inputDevice->getPushState(InputDevice::KEY::TRIGGER_LEFT, InputDevice::KEY_STATE::STATE_HAVE_PUSHED) &&
+			inputDevice->getPushState(InputDevice::KEY::TRIGGER_RIGHT, InputDevice::KEY_STATE::STATE_PUSH)) ||
+			(inputDevice->getPushState(InputDevice::KEY::TRIGGER_LEFT, InputDevice::KEY_STATE::STATE_PUSH) &&
+			inputDevice->getPushState(InputDevice::KEY::TRIGGER_RIGHT, InputDevice::KEY_STATE::STATE_HAVE_PUSHED))) {
+			state = STATE_PAUSE;
+			pauseMenu.enableDraw(0);
+			countdown.disableDraw(0);
+			pauseTime += currentTime - countdownTime;
+			countdownTime = timeGetTime();
+		}
+	}
+
+	/**
+	*  入力状況を表示する関数.
+	*/
 	void PlayRender::input() {
 		for (int i = 0; i < 6; i++) {
-			sprite.disableDraw(15 + i);
-			sprite.disableDraw(23 + i);
+			target.disableDraw(i);
 		}
-		if (inputDevice->getPushState(0, 0) || inputDevice->getPushState(6, 0))
-			sprite.enableDraw(15);
-		if (inputDevice->getPushState(1, 0) || inputDevice->getPushState(5, 0))
-			sprite.enableDraw(16);
-		if (inputDevice->getPushState(2, 0) || inputDevice->getPushState(4, 0))
-			sprite.enableDraw(17);
-		if (inputDevice->getPushState(3, 0) || inputDevice->getPushState(7, 0))
-			sprite.enableDraw(18);
-		if (inputDevice->getPushState(8, 0))
-			sprite.enableDraw(19);
-		if (inputDevice->getPushState(9, 0))
-			sprite.enableDraw(20);
 
-		if (inputDevice->getPushState(0, 1) || inputDevice->getPushState(6, 1))
-			sprite.enableDraw(23);
-		if (inputDevice->getPushState(1, 1) || inputDevice->getPushState(5, 1))
-			sprite.enableDraw(24);
-		if (inputDevice->getPushState(2, 1) || inputDevice->getPushState(4, 1))
-			sprite.enableDraw(25);
-		if (inputDevice->getPushState(3, 1) || inputDevice->getPushState(7, 1))
-			sprite.enableDraw(26);
-		if (inputDevice->getPushState(9, 1))
-			sprite.enableDraw(27);
-		if (inputDevice->getPushState(8, 1))
-			sprite.enableDraw(28);
+		if (inputDevice->getPushState(InputDevice::KEY::ARROW_UP, InputDevice::KEY_STATE::STATE_PUSH) ||
+			inputDevice->getPushState(InputDevice::KEY::BUTTON_UP, InputDevice::KEY_STATE::STATE_PUSH))
+			target.enableDraw(0);
+		if (inputDevice->getPushState(InputDevice::KEY::ARROW_DOWN, InputDevice::KEY_STATE::STATE_PUSH) ||
+			inputDevice->getPushState(InputDevice::KEY::BUTTON_DOWN, InputDevice::KEY_STATE::STATE_PUSH))
+			target.enableDraw(1);
+		if (inputDevice->getPushState(InputDevice::KEY::ARROW_LEFT, InputDevice::KEY_STATE::STATE_PUSH) ||
+			inputDevice->getPushState(InputDevice::KEY::BUTTON_LEFT, InputDevice::KEY_STATE::STATE_PUSH))
+			target.enableDraw(2);
+		if (inputDevice->getPushState(InputDevice::KEY::ARROW_RIGHT, InputDevice::KEY_STATE::STATE_PUSH) ||
+			inputDevice->getPushState(InputDevice::KEY::BUTTON_RIGHT, InputDevice::KEY_STATE::STATE_PUSH))
+			target.enableDraw(3);
+		if (inputDevice->getPushState(InputDevice::KEY::TRIGGER_LEFT, InputDevice::KEY_STATE::STATE_PUSH))
+			target.enableDraw(4);
+		if (inputDevice->getPushState(InputDevice::KEY::TRIGGER_RIGHT, InputDevice::KEY_STATE::STATE_PUSH))
+			target.enableDraw(5);
 
 		//START又はSELECT押下でポーズ
-		if (inputDevice->getPushState(10, 1) || inputDevice->getPushState(11, 1))
-			statePause = true;
+		if (inputDevice->getPushState(InputDevice::KEY::BUTTON_SELECT, InputDevice::KEY_STATE::STATE_PUSH) ||
+			inputDevice->getPushState(InputDevice::KEY::BUTTON_START, InputDevice::KEY_STATE::STATE_PUSH)) {
+			state = STATE_PAUSE;
+			pauseMenu.enableDraw(0);
+		}
 	}
 
-	//judge関数
+	/**
+	*  演奏を判定する関数.
+	*/
 	void PlayRender::judge() {
-		int judge = 0; //1:MISS, 2:BAD, 3:NICE, 4:GOOD, 5:GREAT
-		const float distx = 512.0;
-		const float disty = 384.0;
-		const float greatRange = 0.4f;
-		const float goodRange = 0.6f;
-		const float niceRange = 0.75f;
-		const float badRange = 1.0f;
-		const float out = (float)(32.0 * 1000 / notesMoveSpeed);
-		const float p_great = out * greatRange;
-		const float p_good = out * goodRange;
-		const float p_nice = out * niceRange;
-		const float p_bad = out * badRange;
-		const float points[6] = { 352.0f, 416.0f, 544.0f, 480.0f, 352.0f, 352.0f };
+		enum JUDGE {
+			JUDGE_MISS,
+			JUDGE_BAD,
+			JUDGE_NICE,
+			JUDGE_GOOD,
+			JUDGE_GREAT
+		} judge;
+		const float greatRangeRate = 0.4f;
+		const float goodRangeRate = 0.6f;
+		const float niceRangeRate = 0.75f;
+		const float badRangeRate = 1.0f;
+		const float judgeRange = (float)(32.0 * 1000 / notesMoveSpeed);
+		const float greatRange = judgeRange * greatRangeRate;
+		const float goodRange = judgeRange * goodRangeRate;
+		const float niceRange = judgeRange * niceRangeRate;
+		const float badRange = judgeRange * badRangeRate;
+		const float points[6] = {352.0f, 416.0f, 480.0f, 544.0f, 352.0f, 352.0f};
+		const float moveAmount = (float)((DWORD)(currentTime - previousTime) * 384.0f / notesMoveSpeed);
+		const float moveAmountTrigger = (float)(moveAmount / sqrt(2));
 
-		float add = (float)((DWORD)(currentTime - previousTime) * 384.0 / notesMoveSpeed);
 		float point;
 		float pos;
-		bool pushStatus[6] = { false, false, false, false, false, false };
+		bool pushStatus[6] = {false, false, false, false, false, false};
 
-		TCHAR *arrowKeySoundEffectPath[5] = {
-			 _T(""), _T(""), _T("Data/se/play/bt1.wav"), _T("Data/se/play/bt1.wav"), _T("Data/se/play/bt1.wav")
+		string arrowKeySoundEffectPath[5] = {
+			 "",
+			 "",
+			 soundEffectDirectoryPath + "play/bt1.wav",
+			 soundEffectDirectoryPath + "play/bt1.wav",
+			 soundEffectDirectoryPath + "play/bt1.wav"
 		};//{MISS, BAD, NICE, GOOD, GREAT}
-		TCHAR *triggerKeySoundEffectPath[5] = {
-			 _T(""), _T(""), _T("Data/se/play/bt1.wav"), _T("Data/se/play/bt1.wav"), _T("Data/se/play/bt1.wav")
+		string triggerKeySoundEffectPath[5] = {
+			 "",
+			 "",
+			 soundEffectDirectoryPath + "play/bt1.wav",
+			 soundEffectDirectoryPath + "play/bt1.wav",
+			 soundEffectDirectoryPath + "play/bt1.wav"
 		};//{MISS, BAD, NICE, GOOD, GREAT}
 
-		if (inputDevice->getPushState(0, 1) || inputDevice->getPushState(6, 1))
+		if (inputDevice->getPushState(InputDevice::KEY::ARROW_UP, InputDevice::KEY_STATE::STATE_PUSH) ||
+			inputDevice->getPushState(InputDevice::KEY::BUTTON_UP, InputDevice::KEY_STATE::STATE_PUSH))
 			pushStatus[0] = true;
-		if (inputDevice->getPushState(1, 1) || inputDevice->getPushState(5, 1))
+		if (inputDevice->getPushState(InputDevice::KEY::ARROW_DOWN, InputDevice::KEY_STATE::STATE_PUSH) ||
+			inputDevice->getPushState(InputDevice::KEY::BUTTON_DOWN, InputDevice::KEY_STATE::STATE_PUSH))
 			pushStatus[1] = true;
-		if (inputDevice->getPushState(2, 1) || inputDevice->getPushState(4, 1))
+		if (inputDevice->getPushState(InputDevice::KEY::ARROW_LEFT, InputDevice::KEY_STATE::STATE_PUSH) ||
+			inputDevice->getPushState(InputDevice::KEY::BUTTON_LEFT, InputDevice::KEY_STATE::STATE_PUSH))
 			pushStatus[2] = true;
-		if (inputDevice->getPushState(3, 1) || inputDevice->getPushState(7, 1))
+		if (inputDevice->getPushState(InputDevice::KEY::ARROW_RIGHT, InputDevice::KEY_STATE::STATE_PUSH) ||
+			inputDevice->getPushState(InputDevice::KEY::BUTTON_RIGHT, InputDevice::KEY_STATE::STATE_PUSH))
 			pushStatus[3] = true;
-		if (inputDevice->getPushState(9, 1))
+		if (inputDevice->getPushState(InputDevice::KEY::TRIGGER_LEFT, InputDevice::KEY_STATE::STATE_PUSH))
 			pushStatus[4] = true;
-		if (inputDevice->getPushState(8, 1))
+		if (inputDevice->getPushState(InputDevice::KEY::TRIGGER_RIGHT, InputDevice::KEY_STATE::STATE_PUSH))
 			pushStatus[5] = true;
 
 		vector<vector<int>> judgeNotesNumberQueue = vector<vector<int>>(6);
@@ -380,35 +500,35 @@ namespace Frame {
 			point = points[notesDirection[i] - 1];
 			if (autoPlay) {
 				switch (notesDirection[i]) {
-				case 1:
-					pos = Notes.addPositionY(add, i);
+				case DIRECTION_FROM_TOP:
+					pos = notes.addPositionY(i, moveAmount);
 					if (pos >= point)
 						judgeNotesNumberQueue[0].push_back(i);
 					break;
-				case 2:
-					pos = Notes.addPositionY(-add, i);
+				case DIRECTION_FROM_BOTTOM:
+					pos = notes.addPositionY(i, -moveAmount);
 					if (pos <= point)
 						judgeNotesNumberQueue[1].push_back(i);
 					break;
-				case 3:
-					pos = Notes.addPositionX(-add, i);
-					if (pos <= point)
+				case DIRECTION_FROM_LEFT:
+					pos = notes.addPositionX(i, moveAmount);
+					if (pos >= point)
 						judgeNotesNumberQueue[2].push_back(i);
 					break;
-				case 4:
-					pos = Notes.addPositionX(add, i);
-					if (pos >= point)
+				case DIRECTION_FROM_RIGHT:
+					pos = notes.addPositionX(i, -moveAmount);
+					if (pos <= point)
 						judgeNotesNumberQueue[3].push_back(i);
 					break;
-				case 5:
-					Notes.addPositionX(-add, i);
-					pos = Notes.addPositionY(add, i);
+				case DIRECTION_FROM_TOP_LEFT:
+					notes.addPositionX(i, moveAmountTrigger);
+					pos = notes.addPositionY(i, moveAmountTrigger);
 					if (pos >= point)
 						judgeNotesNumberQueue[4].push_back(i);
 					break;
-				case 6:
-					Notes.addPositionX(add, i);
-					pos = Notes.addPositionY(add, i);
+				case DIRECTION_FROM_TOP_RIGHT:
+					notes.addPositionX(i, -moveAmountTrigger);
+					pos = notes.addPositionY(i, moveAmountTrigger);
 					if (pos >= point)
 						judgeNotesNumberQueue[5].push_back(i);
 					break;
@@ -416,48 +536,48 @@ namespace Frame {
 			}
 			else {
 				switch (notesDirection[i]) {
-				case 1:
-					pos = Notes.addPositionY(add, i);
-					if (pos >= point - out && pushStatus[0])
+				case DIRECTION_FROM_TOP:
+					pos = notes.addPositionY(i, moveAmount);
+					if (pos >= point - judgeRange && pushStatus[0])
 						judgeNotesNumberQueue[0].push_back(i);
-					else if (pos > point + out)
+					else if (pos > point + judgeRange)
 						judgeNotesNumberQueue[0].push_back(i);
 					break;
-				case 2:
-					pos = Notes.addPositionY(-add, i);
-					if (pos <= point + out && pushStatus[1])
+				case DIRECTION_FROM_BOTTOM:
+					pos = notes.addPositionY(i, -moveAmount);
+					if (pos <= point + judgeRange && pushStatus[1])
 						judgeNotesNumberQueue[1].push_back(i);
-					else if (pos < point - out)
+					else if (pos < point - judgeRange)
 						judgeNotesNumberQueue[1].push_back(i);
 					break;
-				case 3:
-					pos = Notes.addPositionX(-add, i);
-					if (pos <= point + out && pushStatus[2])
+				case DIRECTION_FROM_LEFT:
+					pos = notes.addPositionX(i, moveAmount);
+					if (pos >= point - judgeRange && pushStatus[2])
 						judgeNotesNumberQueue[2].push_back(i);
-					else if (pos < point - out)
+					else if (pos > point + judgeRange)
 						judgeNotesNumberQueue[2].push_back(i);
 					break;
-				case 4:
-					pos = Notes.addPositionX(add, i);
-					if (pos >= point - out && pushStatus[3])
+				case DIRECTION_FROM_RIGHT:
+					pos = notes.addPositionX(i, -moveAmount);
+					if (pos <= point + judgeRange && pushStatus[3])
 						judgeNotesNumberQueue[3].push_back(i);
-					else if (pos > point + out)
+					else if (pos < point - judgeRange)
 						judgeNotesNumberQueue[3].push_back(i);
 					break;
-				case 5:
-					Notes.addPositionX(-add, i);
-					pos = Notes.addPositionY(add, i);
-					if (pos >= point - out && pushStatus[4])
+				case DIRECTION_FROM_TOP_LEFT:
+					notes.addPositionX(i, moveAmountTrigger);
+					pos = notes.addPositionY(i, moveAmountTrigger);
+					if (pos >= point - judgeRange && pushStatus[4])
 						judgeNotesNumberQueue[4].push_back(i);
-					else if (pos > point + out)
+					else if (pos > point + judgeRange)
 						judgeNotesNumberQueue[4].push_back(i);
 					break;
-				case 6:
-					Notes.addPositionX(add, i);
-					pos = Notes.addPositionY(add, i);
-					if (pos >= point - out && pushStatus[5])
+				case DIRECTION_FROM_TOP_RIGHT:
+					notes.addPositionX(i, -moveAmountTrigger);
+					pos = notes.addPositionY(i, moveAmountTrigger);
+					if (pos >= point - judgeRange && pushStatus[5])
 						judgeNotesNumberQueue[5].push_back(i);
-					else if (pos > point + out)
+					else if (pos > point + judgeRange)
 						judgeNotesNumberQueue[5].push_back(i);
 					break;
 				}
@@ -465,127 +585,147 @@ namespace Frame {
 		}
 
 		for (int i = 0; i < 6; i++) {
-			int judgeNotesNumber[6] = {};
-			float minPosition = out + 999.0f;
+			int judgeNotesNumber = 0;
+			float minPosition = judgeRange + 999.0f;
 			for (int j = 0; j < (int)judgeNotesNumberQueue[i].size(); j++) {
 				point = points[i];
 				switch (i + 1) {
-				case 1:
-				case 2:
-				case 5:
-				case 6:
-					pos = Notes.addPositionY(0.0f, judgeNotesNumberQueue[i][j]);
+				case DIRECTION_FROM_TOP:
+				case DIRECTION_FROM_BOTTOM:
+				case DIRECTION_FROM_TOP_LEFT:
+				case DIRECTION_FROM_TOP_RIGHT:
+					pos = notes.addPositionY(judgeNotesNumberQueue[i][j], 0.0f);
 					break;
-				case 3:
-				case 4:
-					pos = Notes.addPositionX(0.0f, judgeNotesNumberQueue[i][j]);
+				case DIRECTION_FROM_LEFT:
+				case DIRECTION_FROM_RIGHT:
+					pos = notes.addPositionX(judgeNotesNumberQueue[i][j], 0.0f);
 					break;
 				}
 
 				if ((int)judgeNotesNumberQueue[i].size() == 1) {
-					judgeNotesNumber[i] = j + 1;
+					judgeNotesNumber = j + 1;
 					break;
 				}
 
-				if ((pos > point - p_good) && (pos < point + p_good)) {
-					judgeNotesNumber[i] = j + 1;
+				if ((pos > point - goodRange) && (pos < point + goodRange)) {
+					judgeNotesNumber = j + 1;
 					break;
 				}
 				else if (minPosition > fabs(point - pos)) {
-					judgeNotesNumber[i] = j + 1;
+					judgeNotesNumber = j + 1;
 					minPosition = fabs(point - pos);
 				}
 			}
-			if (judgeNotesNumber[i]) {
+			if (judgeNotesNumber) {
 				point = points[i];
 				switch (i + 1) {
-				case 1:
-				case 2:
-				case 5:
-				case 6:
-					pos = Notes.addPositionY(0.0f, judgeNotesNumberQueue[i][judgeNotesNumber[i] - 1]);
+				case DIRECTION_FROM_TOP:
+				case DIRECTION_FROM_BOTTOM:
+				case DIRECTION_FROM_TOP_LEFT:
+				case DIRECTION_FROM_TOP_RIGHT:
+					pos = notes.addPositionY(judgeNotesNumberQueue[i][judgeNotesNumber - 1], 0.0f);
 					break;
-				case 3:
-				case 4:
-					pos = Notes.addPositionX(0.0f, judgeNotesNumberQueue[i][judgeNotesNumber[i] - 1]);
+				case DIRECTION_FROM_LEFT:
+				case DIRECTION_FROM_RIGHT:
+					pos = notes.addPositionX(judgeNotesNumberQueue[i][judgeNotesNumber - 1], 0.0f);
 					break;
 				}
 
-				if ((pos > point - p_great) && (pos < point + p_great))
-					judge = 5;
-				else if ((pos > point - p_good) && (pos < point + p_good))
-					judge = 4;
-				else if ((pos > point - p_nice) && (pos < point + p_nice))
-					judge = 3;
-				else if ((pos > point - p_bad) && (pos < point + p_bad))
-					judge = 2;
+				if ((pos > point - greatRange) && (pos < point + greatRange))
+					judge = JUDGE_GREAT;
+				else if ((pos > point - goodRange) && (pos < point + goodRange))
+					judge = JUDGE_GOOD;
+				else if ((pos > point - niceRange) && (pos < point + niceRange))
+					judge = JUDGE_NICE;
+				else if ((pos > point - badRange) && (pos < point + badRange))
+					judge = JUDGE_BAD;
 				else
-					judge = 1;
+					judge = JUDGE_MISS;
 				switch (i + 1) {
-				case 1:
-				case 2:
-				case 3:
-				case 4:
-					playSoundEffect(arrowKeySoundEffectPath[judge - 1]);
+				case DIRECTION_FROM_TOP:
+				case DIRECTION_FROM_BOTTOM:
+				case DIRECTION_FROM_TOP_LEFT:
+				case DIRECTION_FROM_TOP_RIGHT:
+					playSoundEffect(arrowKeySoundEffectPath[judge]);
 					break;
-				case 5:
-				case 6:
-					playSoundEffect(triggerKeySoundEffectPath[judge -1]);
+				case DIRECTION_FROM_LEFT:
+				case DIRECTION_FROM_RIGHT:
+					playSoundEffect(triggerKeySoundEffectPath[judge]);
 					break;
 				}
 				switch (judge) {
-				case 1: //MISSのとき
-					Notes.disableDraw(notesDrawStart);
-					sprite.disableDraw(21);
+				case JUDGE_MISS:
+					notes.disableDraw(notesDrawStart);
+					judgeImage.disableDraw(0);
 					notesDrawStart++;
 					statusMissCount++;
 					statusCurrentCombo = 0;
 					break;
-				case 2: //BADのとき
-					Notes.disableDraw(notesDrawStart);
-					sprite.enableDraw(21);
-					sprite.setRect(21, 256, 832, 128, 768);
+				case JUDGE_BAD:
+					notes.disableDraw(notesDrawStart);
+					judgeImage.enableDraw(0);
+					judgeImage.setRectFromChip(0, 1);
 					notesDrawStart++;
 					statusBadCount++;
 					statusCurrentCombo = 0;
 					statusScore += 50;
 					break;
-				case 3: //NICEのとき
-					Notes.disableDraw(notesDrawStart);
-					sprite.enableDraw(21);
-					sprite.setRect(21, 256, 896, 128, 832);
+				case JUDGE_NICE:
+					notes.disableDraw(notesDrawStart);
+					judgeImage.enableDraw(0);
+					judgeImage.setRectFromChip(0, 2);
 					notesDrawStart++;
 					statusNiceCount++;
 					statusCurrentCombo = 0;
-					statusScore += 150;
+					statusScore += 250;
 					break;
-				case 4: //GOODのとき
-					Notes.disableDraw(notesDrawStart);
-					sprite.enableDraw(21);
-					sprite.setRect(21, 256, 960, 128, 896);
+				case JUDGE_GOOD:
+					notes.disableDraw(notesDrawStart);
+					judgeImage.enableDraw(0);
+					judgeImage.setRectFromChip(0, 3);
 					notesDrawStart++;
 					statusGoodCount++;
 					statusCurrentCombo++;
 					break;
-				case 5: //GREATのとき
-					Notes.disableDraw(notesDrawStart);
-					sprite.enableDraw(21);
-					sprite.setRect(21, 256, 1024, 128, 960);
+				case JUDGE_GREAT:
+					notes.disableDraw(notesDrawStart);
+					judgeImage.enableDraw(0);
+					judgeImage.setRectFromChip(0, 4);
 					notesDrawStart++;
 					statusGreatCount++;
 					statusCurrentCombo++;
 					break;
 				}
-				if (judge > 3) {
-					calcScore(judge);
+				if (judge > JUDGE::JUDGE_NICE) {
+					calcScore(judge - JUDGE::JUDGE_NICE);
 				}
 			}
 		}
-		Meter.setRect(0, 128, (LONG)(((statusGreatCount + (statusGoodCount * 0.7) + (statusNiceCount * 0.4) - (statusBadCount * 0.5) - statusMissCount) / (notesCount * 0.85)) * 768));
-		Meter.setCenter(0, 128.0, (float)(((statusGreatCount + (statusGoodCount * 0.7) + (statusNiceCount * 0.4) - (statusBadCount * 0.5) - statusMissCount) / (notesCount * 0.85)) * 768));
+		meter.setRectFromPixel(0, 0, (LONG)(((statusGreatCount + (statusGoodCount * 0.7) + (statusNiceCount * 0.4) - (statusBadCount * 0.5) - statusMissCount) / (notesCount * 0.85)) * 768), 0, 128);
+		meter.setCenter(0, 128.0, (float)(((statusGreatCount + (statusGoodCount * 0.7) + (statusNiceCount * 0.4) - (statusBadCount * 0.5) - statusMissCount) / (notesCount * 0.85)) * 768));
 	}
 
-	//calcScore関数
+	/**
+	*  インスタンスの描画関数.
+	*/
+	void PlayRender::draw() {
+		background.Draw();
+		meter.Draw();
+		userInterfaceOne.Draw();
+		notes.Draw();
+		target.Draw();
+		userInterfaceTwo.Draw();
+		fontTexture.Rend();
+		judgeImage.Draw();
+		figureDraw();
+		pauseMenu.Draw();
+		countdown.Draw();
+	}
+
+	/**
+	*  スコアを計算する関数.
+	*  @param judge<int> 判定結果
+	*/
 	void PlayRender::calcScore(int judge) {
 		float rate = 1.0f;
 		if (statusCurrentCombo == 100) statusScore += 10000;
@@ -609,12 +749,14 @@ namespace Frame {
 		else if (statusCurrentCombo >= 200) rate = 1.2f;
 		else if (statusCurrentCombo >= 100) rate = 1.1f;
 		else if (statusCurrentCombo >= 50) rate = 1.05f;
-		statusScore += (int)(500 * (judge - 3) * rate);
+		statusScore += (int)(500 * judge * rate);
 		if (statusScore > 99999999) statusScore = 99999999;
 		if (statusCurrentCombo > statusMaxCombo) statusMaxCombo = statusCurrentCombo;
 	}
 
-	//calcFPS関数
+	/**
+	*  フレームレートを計算する関数.
+	*/
 	void PlayRender::calcFPS() {
 		if (framePerSecondTime <= currentTime - 1000) {
 			framePerSecond = framePerSecondCount;
@@ -626,189 +768,82 @@ namespace Frame {
 		}
 	}
 
-	//updateTitle関数
+	/**
+	*  ウィンドウタイトルを更新する関数.
+	*/
 	void PlayRender::updateTitle() {
-		TCHAR lpsz[100] = _T("RhythmGame (Miss:");
-		TCHAR xxx[12] = _T("00000");
-		wcscat(lpsz, _itow(statusMissCount, xxx, 10));
-		wcscat(lpsz, _T(", Bad:"));
-		wcscat(lpsz, _itow(statusBadCount, xxx, 10));
-		wcscat(lpsz, _T(", Nice:"));
-		wcscat(lpsz, _itow(statusNiceCount, xxx, 10));
-		wcscat(lpsz, _T(", Good:"));
-		wcscat(lpsz, _itow(statusGoodCount, xxx, 10));
-		wcscat(lpsz, _T(", Great:"));
-		wcscat(lpsz, _itow(statusGreatCount, xxx, 10));
-		wcscat(lpsz, _T(",  / "));
-		wcscat(lpsz, _itow(notesDrawStart, xxx, 10));
-		wcscat(lpsz, _T(") FPS : "));
-		wcscat(lpsz, _itow(framePerSecond, xxx, 10));
-		::SendMessage(hWnd, WM_SETTEXT, 0, (LPARAM)lpsz);
+		TCHAR windowTitle[256] = _T("RhythmGame - ");
+		TCHAR tmp[256];
+		switch (state) {
+		case STATE_WAIT:
+			lstrcat(windowTitle, _T("Waiting……"));
+			break;
+		case STATE_PLAY:
+			lstrcat(windowTitle, _T("Playing"));
+			break;
+		case STATE_PAUSE:
+			lstrcat(windowTitle, _T("Pausing"));
+			break;
+		case STATE_RESTART:
+			lstrcat(windowTitle, _T("Restarting……"));
+			break;
+		default:
+			break;
+		}
+		lstrcat(windowTitle, _T(" オートプレイ:"));
+		if (autoPlay)
+			lstrcat(windowTitle, _T("ON"));
+		else
+			lstrcat(windowTitle, _T("OFF"));
+		lstrcat(windowTitle, _T(" FPS:"));
+		_itot_s(framePerSecond, tmp, 10);
+		lstrcat(windowTitle, tmp);
+		::SendMessage(hWnd, WM_SETTEXT, 0, (LPARAM)windowTitle);
 	}
 
-	//numDraw関数
+	/**
+	*  数字を描画する関数.
+	*/
 	void PlayRender::figureDraw() {
-		std::ostringstream sout;
-		sout << std::setfill('0') << std::setw(8) << statusScore;
-		std::string s = sout.str();
-		for (int i = 0; i < 8; i++) {
-			switch (s[i]) {
-			case '0':
-				sprite.setRect(i + 7, 32, 928, 0, 896);
-				break;
-			case '1':
-				sprite.setRect(i + 7, 64, 928, 32, 896);
-				break;
-			case '2':
-				sprite.setRect(i + 7, 96, 928, 64, 896);
-				break;
-			case '3':
-				sprite.setRect(i + 7, 128, 928, 96, 896);
-				break;
-			case '4':
-				sprite.setRect(i + 7, 32, 960, 0, 928);
-				break;
-			case '5':
-				sprite.setRect(i + 7, 64, 960, 32, 928);
-				break;
-			case '6':
-				sprite.setRect(i + 7, 96, 960, 64, 928);
-				break;
-			case '7':
-				sprite.setRect(i + 7, 128, 960, 96, 928);
-				break;
-			case '8':
-				sprite.setRect(i + 7, 32, 992, 0, 960);
-				break;
-			case '9':
-				sprite.setRect(i + 7, 64, 992, 32, 960);
-				break;
-			}
-		}
-		std::ostringstream sout2;
-		sout2 << std::setfill(' ') << std::setw(4) << statusCurrentCombo;
-		s = sout2.str();
+		ostringstream sout;
+		string fig;
+		sout << std::setfill(' ') << std::setw(4) << statusCurrentCombo;
+		fig = sout.str();
 		if (statusCurrentCombo < 10) {
-			s = "    ";
-			sprite.disableDraw(6);
+			fig = "    ";
+			figures.disableDraw(4);
 		}
 		else {
-			sprite.enableDraw(6);
+			figures.enableDraw(4);
 		}
 		for (int i = 0; i < 4; i++) {
-			switch (s[i]) {
-			case ' ':
-				sprite.setRect(i + 2, 96, 864, 64, 832);
-				break;
-			case '0':
-				sprite.setRect(i + 2, 32, 800, 0, 768);
-				break;
-			case '1':
-				sprite.setRect(i + 2, 64, 800, 32, 768);
-				break;
-			case '2':
-				sprite.setRect(i + 2, 96, 800, 64, 768);
-				break;
-			case '3':
-				sprite.setRect(i + 2, 128, 800, 96, 768);
-				break;
-			case '4':
-				sprite.setRect(i + 2, 32, 832, 0, 800);
-				break;
-			case '5':
-				sprite.setRect(i + 2, 64, 832, 32, 800);
-				break;
-			case '6':
-				sprite.setRect(i + 2, 96, 832, 64, 800);
-				break;
-			case '7':
-				sprite.setRect(i + 2, 128, 832, 96, 800);
-				break;
-			case '8':
-				sprite.setRect(i + 2, 32, 864, 0, 832);
-				break;
-			case '9':
-				sprite.setRect(i + 2, 64, 864, 32, 832);
-				break;
+			if (fig[i] == ' ') {
+				figures.setRectFromChip(i, 11);
+			}
+			else {
+				int figure = (int)(fig[i] - '0');
+				figures.setRectFromChip(i, figure + 1);
 			}
 		}
+		sout.str("");
+		sout.clear();
+		sout << setfill('0') << setw(8) << statusScore;
+		fig = sout.str();
+		for (int i = 0; i < 8; i++) {
+			int figure = (int)(fig[i] - '0');
+			figures.setRectFromChip(i + 5, 17 + figure);
+		}
+
+		figures.Draw();
 	}
 
-	//playSoundEffect関数
-	void PlayRender::playSoundEffect(TCHAR *path) {
-		if (path != _T("")) {
-			PlaySound(path, NULL, SND_FILENAME | SND_ASYNC);
-		}
-	}
-
-	//Pause関数
-	void PlayRender::Pause() {
-		//再生を止める
-		if (Song->getState() == Dix::PCMPlayer::STATE_PLAY) {
-			Song->Pause();
-			countdownTime = timeGetTime();
-		}
-		calcFPS();
-		updateTitle();
-		figureDraw();
-		//Background->Draw();
-		Notes.Draw();
-		Meter.Draw();
-		sprite.Draw();
-		Pau.Draw();
-
-		//STARTSELECT同時押しで再開カウントダウンへ
-		if ((inputDevice->getPushState(10, 0) && (inputDevice->getPushState(11, 0)))) {
-			stateRestart = true;
-			pauseTime += currentTime - countdownTime;
-			countdownTime = timeGetTime();
-		}
-
-		//LR同時押しでSONGSELECTへ
-		if ((inputDevice->getPushState(8, 0) && (inputDevice->getPushState(9, 0)))) {
-			FrameNumber = SONG_SELECT_INIT;
-		}
-	}
-
-	//Restart関数
-	void PlayRender::Restart() {
-		//5秒待って再開
-		if (currentTime > countdownTime + 5000) {
-			statePause = false;
-			stateRestart = false;
-			Song->Play(false);
-			pauseTime += currentTime - countdownTime;
-		}
-		else if (currentTime > countdownTime + 4000) {
-			Countdown.setRect(0, 256, 256, 0, 0);
-		}
-		else if (currentTime > countdownTime + 3000) {
-			Countdown.setRect(0, 512, 256, 256, 0);
-		}
-		else if (currentTime > countdownTime + 2000) {
-			Countdown.setRect(0, 768, 256, 512, 0);
-		}
-		else if (currentTime > countdownTime + 1000) {
-			Countdown.setRect(0, 1024, 256, 768, 0);
-		}
-		else {
-			Countdown.setRect(0, 256, 512, 0, 256);
-		}
-
-		calcFPS();
-		updateTitle();
-		figureDraw();
-		//Background->Draw();
-		Notes.Draw();
-		Meter.Draw();
-		sprite.Draw();
-		Countdown.Draw();
-
-		//LR同時押しでPause画面に戻る
-		if ((inputDevice->getPushState(8, 0) && (inputDevice->getPushState(9, 0)))) {
-			stateRestart = false;
-			pauseTime += currentTime - countdownTime;
-			countdownTime = timeGetTime();
+	/**
+	*  SEを再生する関数.
+	*  @param path<string> ファイルパス
+	*/
+	void PlayRender::playSoundEffect(string path) {
+		if (path != "") {
+			PlaySound(convertStringToTchar(path), NULL, SND_FILENAME | SND_ASYNC);
 		}
 	}
 }

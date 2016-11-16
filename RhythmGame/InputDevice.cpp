@@ -52,14 +52,14 @@ namespace Device {
 	*  @return <bool> 正常に保存できればtrue, そうでなければfalse
 	*/
 	bool Keyboard::getPushState() {
-		memcpy(oldKeyState, keyState, sizeof(keyState));
+		memcpy(oldKeyState, currentKeyState, sizeof(currentKeyState));
 		if (keyboardEnabled) {
-			if (SUCCEEDED(DirectInputDevice8->GetDeviceState(sizeof(keyState), (LPVOID)&keyState))) {
+			if (SUCCEEDED(DirectInputDevice8->GetDeviceState(sizeof(currentKeyState), (LPVOID)&currentKeyState))) {
 				return true;
 			}
 			else {
 				DirectInputDevice8->Acquire();
-				if (SUCCEEDED(DirectInputDevice8->GetDeviceState(sizeof(keyState), (LPVOID)&keyState))) {
+				if (SUCCEEDED(DirectInputDevice8->GetDeviceState(sizeof(currentKeyState), (LPVOID)&currentKeyState))) {
 					return true;
 				}
 				else {
@@ -74,14 +74,14 @@ namespace Device {
 	
 	/**
 	*  指定ボタンが押されているかどうか判定する関数.
-	*  @param key<int> 0:↑, 1:↓, 2:→, 3:←, 4:決定キー, 5:キャンセルキー......
+	*  @param key<int> キー番号
 	*  @param mode<int> 0:押されているかどうか, 1:今押されたかどうか
 	*  @return <bool> 判定結果
 	*/
 	bool Keyboard::getPushState(int key, int mode) {
 		if (keyboardEnabled) {
 			if (!mode) {
-				if (keyState[key] & 0x80) {
+				if (currentKeyState[key] & 0x80) {
 					return true;
 				}
 				else {
@@ -89,7 +89,7 @@ namespace Device {
 				}
 			}
 			else {
-				if ((keyState[key] & 0x80) && !(oldKeyState[key] & 0x80)) {
+				if ((currentKeyState[key] & 0x80) && !(oldKeyState[key] & 0x80)) {
 					return true;
 				}
 				else {
@@ -110,16 +110,16 @@ namespace Device {
 	bool Keyboard::getPushStateAny(int mode) {
 		if (keyboardEnabled) {
 			if (!mode) {
-				for (int i = 0; i < sizeof(keyState); i++) {
-					if (keyState[i] & 0x80) {
+				for (int i = 0; i < sizeof(currentKeyState); i++) {
+					if (currentKeyState[i] & 0x80) {
 						return true;
 					}
 				}
 				return false;
 			}
 			else {
-				for (int i = 0; i < sizeof(keyState); i++) {
-					if ((keyState[i] & 0x80) && !(oldKeyState[i] & 0x80)) {
+				for (int i = 0; i < sizeof(currentKeyState); i++) {
+					if ((currentKeyState[i] & 0x80) && !(oldKeyState[i] & 0x80)) {
 						return true;
 					}
 				}
@@ -164,19 +164,19 @@ namespace Device {
 					// 入力の開始
 					DirectInputDevice8->Poll();
 					DirectInputDevice8->Acquire();
-					loadButtonNum();
-					JoystickEnabled = true;
+					loadKeyNumber();
+					joystickEnabled = true;
 				}
 				else {
-					JoystickEnabled = false;
+					joystickEnabled = false;
 				}
 			}
 			else {
-				JoystickEnabled = false;
+				joystickEnabled = false;
 			}
 		}
 		else {
-			JoystickEnabled = false;
+			joystickEnabled = false;
 		}
 	}
 
@@ -184,7 +184,7 @@ namespace Device {
 	*  デストラクタ
 	*/
 	Joystick::~Joystick() {
-		if (JoystickEnabled) {
+		if (joystickEnabled) {
 			DirectInputDevice8->Unacquire();
 		}
 		if (DirectInputDevice8 != NULL) {
@@ -199,24 +199,23 @@ namespace Device {
 
 	/**
 	*  ジョイスティックが接続されており、正しく動作するか判定する関数.
-	*  @return <bool> JoystickEnabled
+	*  @return <bool> joystickEnabled
 	*/
 	bool Joystick::getEnabled() {
-		return JoystickEnabled;
+		return joystickEnabled;
 	}
 
 	/**
 	*  全ボタンの押下状態を保存する関数.
-	*  @return <bool> JoystickEnabled
+	*  @return <bool> joystickEnabled
 	*/
 	bool Joystick::getPushState() {
-		if (JoystickEnabled) {
-			time = timeGetTime();
+		if (joystickEnabled) {
 			for (int i = 0; i < 20; i++) {
 				//前回の状態をold変数に保存する
-				oldButtonState[i] = ButtonState[i];
+				oldButtonState[i] = currentButtonState[i];
 				//今回の状態を変数に保存する
-				ButtonState[i] = getPushState(i);
+				currentButtonState[i] = getPushState(i);
 			}
 			return true;
 		}
@@ -227,11 +226,11 @@ namespace Device {
 	
 	/**
 	*  指定ボタンが押されているかどうか判定する関数.
-	*  @param key<int> 0:↑, 1:↓, 2:→, 3:←, 4:決定キー, 5:キャンセルキー......
+	*  @param key<int> キー番号
 	*  @return <bool> 判定結果
 	*/
 	bool Joystick::getPushState(int key) {
-		if (JoystickEnabled) {
+		if (joystickEnabled) {
 			bool result = false;
 			HRESULT hr = DirectInputDevice8->GetDeviceState(sizeof(DIJOYSTATE), &js);
 			if (key == 0) {
@@ -241,13 +240,13 @@ namespace Device {
 				if (js.lY == 1000) result = true;
 			}
 			else if (key == 2) {
-				if (js.lX == 1000) result = true;
-			}
-			else if (key == 3) {
 				if (js.lX == -1000) result = true;
 			}
+			else if (key == 3) {
+				if (js.lX == 1000) result = true;
+			}
 			else {
-				if (js.rgbButtons[ButtonNum[key] - 4] & 0x80) result = true;
+				if (js.rgbButtons[keyNumber[key] - 4] & 0x80) result = true;
 			}
 			return result;
 		}
@@ -258,18 +257,18 @@ namespace Device {
 
 	/**
 	*  指定ボタンが押されているかどうか判定する関数.
-	*  @param key<int> 0:↑, 1:↓, 2:→, 3:←, 4:決定キー, 5:キャンセルキー......
+	*  @param key<int> キー番号
 	*  @param mode<int> 0:押されているかどうか, 1:今押されたかどうか
 	*  @return <bool> 判定結果
 	*/
 	bool Joystick::getPushState(int key, int mode) {
-		if (JoystickEnabled) {
+		if (joystickEnabled) {
 			bool result = false;
 			if (!mode) {
-				result = ButtonState[key];
+				result = currentButtonState[key];
 			}
 			else {
-				if ((oldButtonState[key] == false) && (ButtonState[key] == true)) result = true;
+				if ((oldButtonState[key] == false) && (currentButtonState[key] == true)) result = true;
 			}
 			return result;
 		}
@@ -284,10 +283,10 @@ namespace Device {
 	*  @return <bool> 判定結果
 	*/
 	bool Joystick::getPushStateAny(int mode) {
-		if (JoystickEnabled) {
+		if (joystickEnabled) {
 			if (!mode) {
 				for (int i = 0; i < 20; i++) {
-					if (ButtonState[i] == true) {
+					if (currentButtonState[i] == true) {
 						return true;
 					}
 				}
@@ -295,7 +294,7 @@ namespace Device {
 			}
 			else {
 				for (int i = 0; i < 20; i++) {
-					if ((oldButtonState[i] == false) && (ButtonState[i] == true)) {
+					if ((oldButtonState[i] == false) && (currentButtonState[i] == true)) {
 						return true;
 					}
 				}
@@ -310,27 +309,27 @@ namespace Device {
 	/**
 	* キー割り当てをセットしData/conf.iniに書き込む関数.
 	*/
-	void Joystick::setButtonNum() {
+	void Joystick::setKeyNumber() {
 
 	}
 	
 	/**
 	* キー割り当てをData/conf.iniから読み込む関数.
 	*/
-	void Joystick::loadButtonNum() {
+	void Joystick::loadKeyNumber() {
 		TCHAR* configFilePath = _T("Data/conf.ini");
-		ButtonNum[0] = GetPrivateProfileInt(_T("joystick"), _T("up"), 0, configFilePath);
-		ButtonNum[1] = GetPrivateProfileInt(_T("joystick"), _T("down"), 1, configFilePath);
-		ButtonNum[2] = GetPrivateProfileInt(_T("joystick"), _T("right"), 2, configFilePath);
-		ButtonNum[3] = GetPrivateProfileInt(_T("joystick"), _T("left"), 3, configFilePath);
-		ButtonNum[4] = GetPrivateProfileInt(_T("joystick"), _T("btn_right"), 1, configFilePath) + 3;
-		ButtonNum[5] = GetPrivateProfileInt(_T("joystick"), _T("btn_down"), 2, configFilePath) + 3;
-		ButtonNum[6] = GetPrivateProfileInt(_T("joystick"), _T("btn_up"), 3, configFilePath) + 3;
-		ButtonNum[7] = GetPrivateProfileInt(_T("joystick"), _T("btn_left"), 4, configFilePath) + 3;
-		ButtonNum[8] = GetPrivateProfileInt(_T("joystick"), _T("btn_R"), 5, configFilePath) + 3;
-		ButtonNum[9] = GetPrivateProfileInt(_T("joystick"), _T("btn_L"), 6, configFilePath) + 3;
-		ButtonNum[10] = GetPrivateProfileInt(_T("joystick"), _T("btn_select"), 7, configFilePath) + 3;
-		ButtonNum[11] = GetPrivateProfileInt(_T("joystick"), _T("btn_start"), 8, configFilePath) + 3;
+		keyNumber[0] = GetPrivateProfileInt(_T("joystick"), _T("arrow-up"), 1, configFilePath) - 1;
+		keyNumber[1] = GetPrivateProfileInt(_T("joystick"), _T("arrow-down"), 2, configFilePath) - 1;
+		keyNumber[2] = GetPrivateProfileInt(_T("joystick"), _T("arrow-left"), 3, configFilePath) - 1;
+		keyNumber[3] = GetPrivateProfileInt(_T("joystick"), _T("arrow-right"), 4, configFilePath) - 1;
+		keyNumber[4] = GetPrivateProfileInt(_T("joystick"), _T("button-up"), 1, configFilePath) + 3;
+		keyNumber[5] = GetPrivateProfileInt(_T("joystick"), _T("button-down"), 2, configFilePath) + 3;
+		keyNumber[6] = GetPrivateProfileInt(_T("joystick"), _T("button-left"), 3, configFilePath) + 3;
+		keyNumber[7] = GetPrivateProfileInt(_T("joystick"), _T("button-right"), 4, configFilePath) + 3;
+		keyNumber[8] = GetPrivateProfileInt(_T("joystick"), _T("button-select"), 5, configFilePath) + 3;
+		keyNumber[9] = GetPrivateProfileInt(_T("joystick"), _T("button-start"), 6, configFilePath) + 3;
+		keyNumber[10] = GetPrivateProfileInt(_T("joystick"), _T("trigger-left"), 7, configFilePath) + 3;
+		keyNumber[11] = GetPrivateProfileInt(_T("joystick"), _T("trigger-right"), 8, configFilePath) + 3;
 	}
 
 	/**
@@ -338,7 +337,7 @@ namespace Device {
 	*  @return <HRESULT> デバイスが有効ならAcquire関数の戻り値, 無効ならE_FAIL
 	*/
 	HRESULT Joystick::acquire() {
-		if (JoystickEnabled) {
+		if (joystickEnabled) {
 			return DirectInputDevice8->Acquire();
 		}
 		else {
@@ -377,8 +376,8 @@ namespace Device {
 	*  @param hWnd<HWND> ウィンドウハンドル
 	*/
 	InputDevice::InputDevice(HWND hWnd) :
-			joystick        (hWnd),
-			keyboard        (hWnd) {
+			joystick(hWnd),
+			keyboard(hWnd) {
 
 	}
 
@@ -409,20 +408,26 @@ namespace Device {
 	
 	/**
 	*  指定ボタンが押されているかどうか判定する関数.
-	*  @param key<int> 0:↑, 1:↓, 2:→, 3:←, 4:決定キー, 5:キャンセルキー......
-	*  @param mode<int> 0:押されているかどうか, 1:今押されたかどうか
+	*  @param key<KEY> キー番号
+	*  @param mode<KEY_STATE> STATE_HAVE_PUSHED:押されているかどうか, STATE_PUSH:今押されたかどうか
 	*  @return <bool> 判定結果
 	*/
-	bool InputDevice::getPushState(int key, int mode) {
-		return joystick.getPushState(key, mode) || keyboard.getPushState(keyboardKey[key], mode);
+	bool InputDevice::getPushState(KEY key, KEY_STATE mode) {
+		bool joy = joystick.getPushState(joystickKeys[key], mode);
+		bool kb;
+		if (key == KEY::ARROW_UP || key == KEY::ARROW_DOWN || key == KEY::ARROW_LEFT || key == KEY::ARROW_RIGHT)
+			kb = keyboard.getPushState(keyboardKeys[key], mode) || keyboard.getPushState(keyboardKeys[key + 14], mode);
+		else
+			kb = keyboard.getPushState(keyboardKeys[key], mode);
+		return joy || kb;
 	}
 	
 	/**
 	*  1つでもボタンが押されているかどうか判定する関数.
-	*  @param mode<int> 0:押されているかどうか, 1:今押されたかどうか
+	*  @param mode<KEY_STATE> STATE_HAVE_PUSHED:押されているかどうか, STATE_PUSH:今押されたかどうか
 	*  @return <bool> 判定結果
 	*/
-	bool InputDevice::getPushStateAny(int mode) {
+	bool InputDevice::getPushStateAny(KEY_STATE mode) {
 		return joystick.getPushStateAny(mode) || keyboard.getPushStateAny(mode);
 	}
 	

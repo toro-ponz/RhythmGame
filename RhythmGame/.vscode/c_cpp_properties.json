@@ -10,11 +10,7 @@
         },
         {
             "name": "Win32",
-            "includePath": ["c:/Program Files (x86)/Microsoft Visual Studio 14.0/VC/include"]
-        },
-        {
-            "name": "Win32",
-            "includePath": ["c:/Program Files (x86)/Windows Kits/10/Include"]
+            "includePath": ["C:/Program Files (x86)/Microsoft Visual Studio 14.0/VC/include;C:/Program Files (x86)/Windows Kits/10/Include;C:/Program Files (x86)/Microsoft DirectX SDK (June 2010)/Include"]
         }
     ],
     "clang_format" : {

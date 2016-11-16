@@ -1,51 +1,74 @@
 #include "Credit2RenderClass.h"
 #include "InputDevice.h"
-
-extern BYTE FrameNumber;
-extern Device::InputDevice * inputDevice;
-
-using namespace DxSprite;
+#include "GlobalVariable.h"
 
 namespace Frame {
-	//コンストラクタ
+	/**
+	*  コンストラクタ
+	*/
 	Credit2Render::Credit2Render():
-			Logo     (_T("Data/img/cledit/logo1.png")),
-			Black    (_T("Data/img/color/black.png")),
-			x        (0),
-			flag     (false) {
-		Logo.setPosition(0, 256.0f, 320.0f);
-		Black.setPosition(0, 0.0f, 0.0f);
-		Black.setRect(0, 1024, 768);
-		wv = new WavPlayer(_T("Data/se/credit/logo2.wav"));
+			Description(creditImageDirectoryPath + "description.png"),
+			Black(colorDirectoryPath + "black.png") {
+		Black.setRectFromPixel(0, 0, 768, 0, 1024);
+		state = 0;
+		oldTime = timeGetTime();
 	}
 
-	//デストラクタ
+	/**
+	*  デストラクタ
+	*/
 	Credit2Render::~Credit2Render() {
-		delete[] Sprite;
-		delete wv;
+
 	}
 
-	//Rend関数
+	/**
+	*  描画する関数.
+	*/
 	void Credit2Render::Rend(void) {
 		Sprite->Begin(NULL);
 
-		Logo.Draw();
-
-		if (!flag) {
-			if (!Black.addAlpha(-5)) flag = true;
-		}
-		else {
-			if (x == 0 && flag) {
-				//wv->Play();
-			}
-			x++;
-			if (x > 100) {
-				if (!Black.addAlpha(5)) FrameNumber = TITLE_INIT;
-			}
-		}
-
+		DWORD time = timeGetTime();
 		inputDevice->getPushState();
-		if (inputDevice->getPushStateAny(1)) FrameNumber = TITLE_INIT;
+
+		Description.Draw();
+		Black.Draw();
+
+		switch (state) {
+		case 0:
+			if (oldTime + 4 < time) {
+				for (int i = 0; i < (int)((time - oldTime) / 4); i++) {
+					if (!Black.addAlpha(0, -1)) {
+						state++;
+						break;
+					}
+				}
+				oldTime = time;
+			}
+			break;
+		case 1:
+			if (oldTime + 2000 < time) {
+				oldTime = time;
+				state++;
+			}
+			break;
+		case 2:
+			if (oldTime + 4 < time) {
+				for (int i = 0; i < (int)((time - oldTime) / 4); i++) {
+					if (!Black.addAlpha(0, 1)) {
+						state++;
+						break;
+					}
+				}
+				oldTime = time;
+			}
+			break;
+		case 3:
+			frameNumber.setFrameNumber(FrameNumber::FRAME_NUMBER::TITLE_INIT);
+			break;
+		}
+
+		if (inputDevice->getPushStateAny(InputDevice::KEY_STATE::STATE_PUSH))
+			frameNumber.setFrameNumber(FrameNumber::FRAME_NUMBER::TITLE_INIT);
 
 		Sprite->End();
 	}

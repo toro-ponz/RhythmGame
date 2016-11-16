@@ -1,0 +1,32 @@
+#pragma once
+
+namespace Frame {
+	class FrameNumber {
+	public:
+		FrameNumber();
+		~FrameNumber();
+		enum class FRAME_NUMBER {
+			CREDIT1_INIT,
+			CREDIT1_MAIN,
+			CREDIT2_INIT,
+			CREDIT2_MAIN,
+			TITLE_INIT,
+			TITLE_MAIN,
+			SONG_SELECT_INIT,
+			SONG_SELECT_MAIN,
+			PLAY_INIT,
+			PLAY_MAIN,
+			RESULT_INIT,
+			RESULT_MAIN,
+			CONFIG_INIT,
+			CONFIG_MAIN,
+			FINISH
+		};
+		void setFrameNumber(FRAME_NUMBER);
+		FRAME_NUMBER getFrameNumber();
+		bool compareFrameNumber(FRAME_NUMBER);
+
+	private:
+		FRAME_NUMBER frameNumber;
+	};
+}

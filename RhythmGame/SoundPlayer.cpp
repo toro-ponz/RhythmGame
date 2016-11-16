@@ -5,11 +5,12 @@
 #include "OggVorbisFile.h"
 #include "DixSmartPtr.h"
 #include "DixComPtr.h"
-
-extern HWND hWnd;
+#include "GlobalVariable.h"
 
 namespace Sound {
-	//コンストラクタ
+	/**
+	*  コンストラクタ
+	*/
 	OggPlayer::OggPlayer(string file) {
 		// DirectSoundの作成
 		DirectSoundCreate8(NULL, &pDS8, NULL);
@@ -24,31 +25,41 @@ namespace Sound {
 		player.setDecoder(spOggDecoder);
 	}
 
-	//デストラクタ
+	/**
+	*  デストラクタ
+	*/
 	OggPlayer::~OggPlayer() {
 
 	}
 
-	//Play関数
+	/**
+	*  再生を開始する関数.
+	*  @param loop<bool> 再生をループさせるか否か
+	*  @return <bool> 正常に再生が開始されたか否か
+	*/
 	bool OggPlayer::Play(bool loop) {
-		if (player.play(loop) == false) {
-			return false;
-		}
-		return true;
+		return player.play(loop);
 	}
 
-	//Pause関数
+	/**
+	*  再生を一時停止する関数.
+	*/
 	void OggPlayer::Pause() {
 		player.pause();
 	}
 
-	//getState関数
-	int OggPlayer::getState(void) {
+	/**
+	*  プレイヤーの状態を返す関数.
+	*  @return <STATE> プレイヤーの状態
+	*/
+	Dix::PCMPlayer::STATE OggPlayer::getState() {
 		return player.getState();
 	}
 
-	//コンストラクタ
-	WavPlayer::WavPlayer(TCHAR * file) {
+	/**
+	*  コンストラクタ
+	*/
+	WavPlayer::WavPlayer(TCHAR *file) {
 		// Waveファイルオープン
 		WAVEFORMATEX wFmt;
 		char *pWaveData = 0;
@@ -86,17 +97,28 @@ namespace Sound {
 		delete[] pWaveData; // 元音はもういらない
 	}
 
-	//デストラクタ
+	/**
+	*  デストラクタ
+	*/
 	WavPlayer::~WavPlayer() {
 		pDSBuffer->Release();
 	}
 
-	//Play関数
-	void WavPlayer::Play(void) {
+	/**
+	*  再生を開始する関数.
+	*/
+	void WavPlayer::Play() {
 		pDSBuffer->Play(0, 0, 0);
 	}
 
-	//openWave関数
+	/**
+	*  waveファイルを開く関数.
+	*  @param filepath<TCHAR*> 再生するファイルのパス
+	*  @param waveFormatEx<WAVEFORMATEX&> 
+	*  @param ppData<char**> 
+	*  @param dataSize<DWORD&> 
+	*  @return <bool> ファイルが正常に開けたか否か
+	*/
 	bool WavPlayer::openWave(TCHAR *filepath, WAVEFORMATEX &waveFormatEx, char** ppData, DWORD &dataSize) {
 		if (filepath == 0)
 			return false;

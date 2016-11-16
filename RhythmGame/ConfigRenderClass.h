@@ -2,8 +2,6 @@
 
 #include "SpriteDrawingClass.h"
 
-#define SONG_SELECT_INIT         25
-
 using namespace DxSprite;
 
 namespace Frame {

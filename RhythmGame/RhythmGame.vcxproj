@@ -29,7 +29,7 @@
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
     <PlatformToolset>v140</PlatformToolset>
-    <CharacterSet>Unicode</CharacterSet>
+    <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
@@ -160,6 +160,8 @@
     <ClCompile Include="Credit1RenderClass.cpp" />
     <ClCompile Include="Credit2RenderClass.cpp" />
     <ClCompile Include="FontTextureCreateClass.cpp" />
+    <ClCompile Include="FrameNumberClass.cpp" />
+    <ClCompile Include="GlobalVariable.cpp" />
     <ClCompile Include="InputDevice.cpp" />
     <ClCompile Include="OggDecoder.cpp" />
     <ClCompile Include="OggVorbisFile.cpp" />
@@ -183,6 +185,8 @@
     <ClInclude Include="DixComPtr.h" />
     <ClInclude Include="DixSmartPtr.h" />
     <ClInclude Include="FontTextureCreateClass.h" />
+    <ClInclude Include="FrameNumberClass.h" />
+    <ClInclude Include="GlobalVariable.h" />
     <ClInclude Include="InputDevice.h" />
     <ClInclude Include="OggDecoder.h" />
     <ClInclude Include="OggVorbisFile.h" />
