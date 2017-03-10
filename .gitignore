@@ -244,11 +244,4 @@ ModelManifest.xml
 # FAKE - F# Make
 .fake/
 *.clip
-RhythmGame/Data/img/songselect/素材/00008.png
-RhythmGame/Data/img/songselect/素材/3.png
-RhythmGame/Data/img/songselect/素材/6757.png
-RhythmGame/Data/img/songselect/素材/f.png
-RhythmGame/Data/img/songselect/素材/80.png
-RhythmGame/Data/img/songselect/素材/6.png
-RhythmGame/Data/img/songselect/素材/4.png
-RhythmGame/Data/img/songselect/素材/0009.png
+RhythmGame/Resource/*.wav
