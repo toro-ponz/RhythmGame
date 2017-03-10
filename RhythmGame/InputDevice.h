@@ -19,6 +19,8 @@ namespace Device {
 		bool getPushState();
 		bool getPushState(int, int);
 		bool getPushStateAny(int);
+		int getPushedKeyNumber(int);
+		void loadKeyNumber();
 		HRESULT acquire();
 
     private:
@@ -27,6 +29,26 @@ namespace Device {
         bool keyboardEnabled;
 		BYTE currentKeyState[256];
 		BYTE oldKeyState[256];
+		int keyNumber[18] = {
+			DIK_W,
+			DIK_S,
+			DIK_A,
+			DIK_D,
+			DIK_I,
+			DIK_K,
+			DIK_J,
+			DIK_L,
+			DIK_F1,
+			DIK_F2,
+			DIK_Q,
+			DIK_O,
+			DIK_RETURN,
+			DIK_ESCAPE,
+			DIK_UP,
+			DIK_DOWN,
+			DIK_LEFT,
+			DIK_RIGHT
+		};
     };
 	
 	class Joystick {
@@ -37,7 +59,7 @@ namespace Device {
 		bool getPushState();
 		bool getPushState(int, int);
 		bool getPushStateAny(int);
-		void setKeyNumber();
+		int getPushedKeyNumber(int);
 		void loadKeyNumber();
 		HRESULT acquire();
 
@@ -66,6 +88,11 @@ namespace Device {
 		bool getPushState();
 		bool getPushState(KEY, KEY_STATE);
 		bool getPushStateAny(KEY_STATE);
+		bool getKeyboardPushStateAny(KEY_STATE);
+		bool getJoystickPushStateAny(KEY_STATE);
+		int getKeyboardPushKeyNumber(KEY_STATE);
+		int getJoystickPushKeyNumber(KEY_STATE);
+		void loadKeyNumber();
 		bool acquire();
 		
 		enum KEY {
@@ -83,6 +110,10 @@ namespace Device {
 			TRIGGER_RIGHT,
 			RETURN,
 			ESCAPE,
+			UP,
+			DOWN,
+			LEFT,
+			RIGHT
 		};
 		enum KEY_STATE {
 			STATE_HAVE_PUSHED, //‰Ÿ‚µ‚Ä‚¢‚é
@@ -94,26 +125,6 @@ namespace Device {
 		Joystick joystick;
 				
 		int keyboardKeys[18] {
-			DIK_W,
-			DIK_S,
-			DIK_A,
-			DIK_D,
-			DIK_I,
-			DIK_K,
-			DIK_J,
-			DIK_L,
-			DIK_F1,
-			DIK_F2,
-			DIK_Q,
-			DIK_O,
-			DIK_RETURN,
-			DIK_ESCAPE,
-			DIK_UP,
-			DIK_DOWN,
-			DIK_LEFT,
-			DIK_RIGHT
-		};
-		int joystickKeys[14] {
 			ARROW_UP,
 			ARROW_DOWN,
 			ARROW_LEFT,
@@ -128,6 +139,24 @@ namespace Device {
 			TRIGGER_RIGHT,
 			RETURN,
 			ESCAPE,
+			UP,
+			DOWN,
+			LEFT,
+			RIGHT
+		};
+		int joystickKeys[14] {
+			ARROW_UP,
+			ARROW_DOWN,
+			ARROW_LEFT,
+			ARROW_RIGHT,
+			BUTTON_UP,
+			BUTTON_DOWN,
+			BUTTON_LEFT,
+			BUTTON_RIGHT,
+			BUTTON_SELECT,
+			BUTTON_START,
+			TRIGGER_LEFT,
+			TRIGGER_RIGHT,
 		};
 	};
 }

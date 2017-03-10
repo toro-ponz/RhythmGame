@@ -1,6 +1,6 @@
 #pragma once
 
-#include "GlobalVariable.h"
+#include "Global.h"
 #include <string>
 #include <vector>
 #include <tchar.h>
@@ -26,6 +26,7 @@ namespace DxSprite {
 		void setCenter(int, float = 0.0f, float = 0.0f, float = 0.0f);
 		void setPosition(int, float = 0.0f, float = 0.0f, float = 0.0f);
 		void setColor(int, D3DCOLOR);
+		int getElementCount();
 		float addPositionX(int, float);
 		float addPositionY(int, float);
 		bool addAlpha(int, int);

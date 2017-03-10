@@ -157,11 +157,10 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="ConfigRenderClass.cpp" />
-    <ClCompile Include="Credit1RenderClass.cpp" />
-    <ClCompile Include="Credit2RenderClass.cpp" />
+    <ClCompile Include="CreditRenderClass.cpp" />
     <ClCompile Include="FontTextureCreateClass.cpp" />
     <ClCompile Include="FrameNumberClass.cpp" />
-    <ClCompile Include="GlobalVariable.cpp" />
+    <ClCompile Include="Global.cpp" />
     <ClCompile Include="InputDevice.cpp" />
     <ClCompile Include="OggDecoder.cpp" />
     <ClCompile Include="OggVorbisFile.cpp" />
@@ -180,13 +179,12 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ConfigRenderClass.h" />
-    <ClInclude Include="Credit1RenderClass.h" />
-    <ClInclude Include="Credit2RenderClass.h" />
+    <ClInclude Include="CreditRenderClass.h" />
     <ClInclude Include="DixComPtr.h" />
     <ClInclude Include="DixSmartPtr.h" />
     <ClInclude Include="FontTextureCreateClass.h" />
     <ClInclude Include="FrameNumberClass.h" />
-    <ClInclude Include="GlobalVariable.h" />
+    <ClInclude Include="Global.h" />
     <ClInclude Include="InputDevice.h" />
     <ClInclude Include="OggDecoder.h" />
     <ClInclude Include="OggVorbisFile.h" />
@@ -196,6 +194,7 @@
     <ClInclude Include="PCMPlayer.h" />
     <ClInclude Include="PlayRenderClass.h" />
     <ClInclude Include="RenderClass.h" />
+    <ClInclude Include="resource.h" />
     <ClInclude Include="ResultRenderClass.h" />
     <ClInclude Include="RhythmGame.h" />
     <ClInclude Include="SongSelectRenderClass.h" />
@@ -203,6 +202,19 @@
     <ClInclude Include="SpriteDrawingClass.h" />
     <ClInclude Include="TitleRenderClass.h" />
     <ClInclude Include="WindowClass.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="RhythmGame.rc" />
+  </ItemGroup>
+  <ItemGroup>
+    <Media Include="Resource\button_beep1.wav" />
+    <Media Include="Resource\button_close1.wav" />
+    <Media Include="Resource\button_move1.wav" />
+    <Media Include="Resource\button_return1.wav" />
+    <Media Include="Resource\button_return2.wav" />
+    <Media Include="Resource\se_button1.wav" />
+    <Media Include="Resource\se_button2.wav" />
+    <Media Include="Resource\se_button3.wav" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -5,7 +5,7 @@
 #include "OggVorbisFile.h"
 #include "DixSmartPtr.h"
 #include "DixComPtr.h"
-#include "GlobalVariable.h"
+#include "Global.h"
 
 namespace Sound {
 	/**
@@ -46,6 +46,13 @@ namespace Sound {
 	*/
 	void OggPlayer::Pause() {
 		player.pause();
+	}
+
+	/**
+	*  Ä¶‚ğ’â~‚·‚éŠÖ”.
+	*/
+	void OggPlayer::Stop() {
+		player.stop();
 	}
 
 	/**

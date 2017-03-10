@@ -18,12 +18,13 @@ using std::vector;
 namespace Frame {
 	class PlayRender {
 	public:
-		PlayRender(string, int);
+		PlayRender(string, int, bool, bool);
 		~PlayRender();
 		void Rend();
 		int getResult(int);
 
 	private:
+		void initialize();
 		void wait();
 		void play();
 		void pause();
@@ -35,7 +36,6 @@ namespace Frame {
 		void calcFPS();
 		void updateTitle();
 		void figureDraw();
-		void playSoundEffect(string);
 
 		SpriteDrawing notes;
 		SpriteDrawing userInterfaceOne;
@@ -44,11 +44,14 @@ namespace Frame {
 		SpriteDrawing figures;
 		SpriteDrawing judgeImage;
 		SpriteDrawing pauseMenu;
+		SpriteDrawing pauseCursor;
 		SpriteDrawing meter;
 		SpriteDrawing countdown;
+		SpriteDrawing titleFrame;
 		SpriteDrawing background;
 
 		FontTextureCreate fontTexture;
+		FontTextureCreate titleFrameTitle;
 		
 		OggPlayer *Song;
 
@@ -57,9 +60,10 @@ namespace Frame {
 		DWORD currentTime;
 		DWORD startTime;
 		DWORD previousTime;
-		DWORD pauseTime = 0;
+		DWORD pauseTime;
 		DWORD countdownTime;
 		DWORD framePerSecondTime;
+		DWORD timing;
 
 		vector<int> notesNumber;
 		vector<int> notesMode;
@@ -69,26 +73,29 @@ namespace Frame {
 		vector<int> notesDenominator;
 		vector<int> notesMolecule;
 
-		int notesDrawStart = 0;
-		int notesDrawStop = 0;
-		int statusMissCount = 0;
-		int statusBadCount = 0;
-		int statusNiceCount = 0;
-		int statusGoodCount = 0;
-		int statusGreatCount = 0;
-		int statusScore = 0;
-		int statusCurrentCombo = 0;
-		int statusMaxCombo = 0;
-		int framePerSecond = 0;
-		int framePerSecondCount = 0;
+		int notesDrawStart;
+		int notesDrawStop;
+		int statusMissCount;
+		int statusBadCount;
+		int statusNiceCount;
+		int statusGoodCount;
+		int statusGreatCount;
+		int statusScore;
+		int statusCurrentCombo;
+		int statusMaxCombo;
+		int framePerSecond;
+		int framePerSecondCount;
 		int sheetLevel;
 		int songBpm;
 		int songRhythm;
 		int notesMoveSpeed;
-		int dataRow = 0;
-		int notesCount = 0;
+		int dataRow;
+		int notesCount;
+		int pauseCursorNumber;
 
+		bool enabled;
 		bool autoPlay;
+		bool customSkin;
 
 		enum STATE {
 			STATE_NONE,

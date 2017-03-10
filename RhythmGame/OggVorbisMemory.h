@@ -12,7 +12,7 @@ namespace Dix {
 		OggVorbisMemory();
 		OggVorbisMemory( const char* filePath );
 		virtual ~OggVorbisMemory();
-
+		
 		//! Oggバッファを作成
 		bool createBuffer( const char* filePath );
 

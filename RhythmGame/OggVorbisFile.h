@@ -13,7 +13,7 @@ namespace Dix {
 	public:
 		OggVorbisFile();
 		OggVorbisFile( const char* filePath );
-
+		
 		virtual ~OggVorbisFile();
 
 		//! ÉNÉäÉA

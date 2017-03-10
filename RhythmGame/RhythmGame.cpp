@@ -1,5 +1,4 @@
 #include "RhythmGame.h"
-#include <thread>
 
 int WINAPI _tWinMain(HINSTANCE hThisInst, HINSTANCE hPrevInst, LPTSTR lpszArgs, int nWinMode) {
 	MSG msg;

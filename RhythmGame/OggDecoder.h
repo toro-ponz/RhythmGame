@@ -15,7 +15,7 @@ namespace Dix {
 		OggDecoder();
 		OggDecoder( sp< OggVorbisResource > oggVorbisResource );
 		virtual ~OggDecoder();
-
+		
 		//! ÉNÉäÉA
 		virtual void clear();
 

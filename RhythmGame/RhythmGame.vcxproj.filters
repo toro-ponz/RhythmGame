@@ -48,12 +48,6 @@
     <ClCompile Include="ConfigRenderClass.cpp">
       <Filter>ソース ファイル\Render</Filter>
     </ClCompile>
-    <ClCompile Include="Credit1RenderClass.cpp">
-      <Filter>ソース ファイル\Render</Filter>
-    </ClCompile>
-    <ClCompile Include="Credit2RenderClass.cpp">
-      <Filter>ソース ファイル\Render</Filter>
-    </ClCompile>
     <ClCompile Include="PlayRenderClass.cpp">
       <Filter>ソース ファイル\Render</Filter>
     </ClCompile>
@@ -84,10 +78,13 @@
     <ClCompile Include="PCMPlayer.cpp">
       <Filter>ソース ファイル\OggVorbis</Filter>
     </ClCompile>
-    <ClCompile Include="GlobalVariable.cpp">
+    <ClCompile Include="FrameNumberClass.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="FrameNumberClass.cpp">
+    <ClCompile Include="CreditRenderClass.cpp">
+      <Filter>ソース ファイル\Render</Filter>
+    </ClCompile>
+    <ClCompile Include="Global.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
   </ItemGroup>
@@ -114,12 +111,6 @@
       <Filter>ヘッダー ファイル\Render</Filter>
     </ClInclude>
     <ClInclude Include="ConfigRenderClass.h">
-      <Filter>ヘッダー ファイル\Render</Filter>
-    </ClInclude>
-    <ClInclude Include="Credit1RenderClass.h">
-      <Filter>ヘッダー ファイル\Render</Filter>
-    </ClInclude>
-    <ClInclude Include="Credit2RenderClass.h">
       <Filter>ヘッダー ファイル\Render</Filter>
     </ClInclude>
     <ClInclude Include="ResultRenderClass.h">
@@ -158,11 +149,48 @@
     <ClInclude Include="PCMPlayer.h">
       <Filter>ヘッダー ファイル\OggVorbis</Filter>
     </ClInclude>
-    <ClInclude Include="GlobalVariable.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
     <ClInclude Include="FrameNumberClass.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
+    <ClInclude Include="CreditRenderClass.h">
+      <Filter>ヘッダー ファイル\Render</Filter>
+    </ClInclude>
+    <ClInclude Include="Global.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="resource.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="RhythmGame.rc">
+      <Filter>リソース ファイル</Filter>
+    </ResourceCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Media Include="Resource\se_button3.wav">
+      <Filter>リソース ファイル</Filter>
+    </Media>
+    <Media Include="Resource\se_button1.wav">
+      <Filter>リソース ファイル</Filter>
+    </Media>
+    <Media Include="Resource\se_button2.wav">
+      <Filter>リソース ファイル</Filter>
+    </Media>
+    <Media Include="Resource\button_beep1.wav">
+      <Filter>リソース ファイル</Filter>
+    </Media>
+    <Media Include="Resource\button_close1.wav">
+      <Filter>リソース ファイル</Filter>
+    </Media>
+    <Media Include="Resource\button_move1.wav">
+      <Filter>リソース ファイル</Filter>
+    </Media>
+    <Media Include="Resource\button_return1.wav">
+      <Filter>リソース ファイル</Filter>
+    </Media>
+    <Media Include="Resource\button_return2.wav">
+      <Filter>リソース ファイル</Filter>
+    </Media>
   </ItemGroup>
 </Project>

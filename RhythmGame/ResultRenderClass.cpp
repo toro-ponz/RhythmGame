@@ -1,5 +1,5 @@
 #include "ResultRenderClass.h"
-#include "GlobalVariable.h"
+#include "Global.h"
 
 namespace Frame {
 	/**

@@ -232,6 +232,14 @@ namespace DxSprite {
 	}
 
 	/**
+	*  —v‘f”‚ğ•Ô‚·ŠÖ”.
+	*  @return <int> —v‘f”
+	*/
+	int SpriteDrawing::getElementCount() {
+		return elementCount;
+	}
+
+	/**
 	*  •`‰æÀ•W‚ğˆÚ“®‚·‚éŠÖ”.
 	*  @param suffix<int> —v‘f”Ô†
 	*  @param add<float> XÀ•W‚Ì‘Œ¸

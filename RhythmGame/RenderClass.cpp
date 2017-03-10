@@ -1,5 +1,5 @@
 #include "RenderClass.h"
-#include "GlobalVariable.h"
+#include "Global.h"
 
 namespace Frame{
 	/**
@@ -13,13 +13,9 @@ namespace Frame{
 	*  デストラクタ
 	*/
 	Render::~Render() {
-		if (cr1 != NULL) {
-			delete cr1;
-			cr1 = NULL;
-		}
-		if (cr2 != NULL) {
-			delete cr2;
-			cr2 = NULL;
+		if (cr != NULL) {
+			delete cr;
+			cr = NULL;
 		}
 		if (tr != NULL) {
 			delete tr;
@@ -48,24 +44,14 @@ namespace Frame{
 	*/
 	void Render::Rend(void) {
 		switch (frameNumber.getFrameNumber()) {
-		case FrameNumber::FRAME_NUMBER::CREDIT1_INIT:
-			cr1 = new Credit1Render();
-			frameNumber.setFrameNumber(FrameNumber::FRAME_NUMBER::CREDIT1_MAIN);
-		case FrameNumber::FRAME_NUMBER::CREDIT1_MAIN:
-			cr1->Rend();
-			if (!frameNumber.compareFrameNumber(FrameNumber::FRAME_NUMBER::CREDIT1_MAIN)) {
-				delete cr1;
-				cr1 = NULL;
-			}
-			break;
-		case FrameNumber::FRAME_NUMBER::CREDIT2_INIT:
-			cr2 = new Credit2Render();
-			frameNumber.setFrameNumber(FrameNumber::FRAME_NUMBER::CREDIT2_MAIN);
-		case FrameNumber::FRAME_NUMBER::CREDIT2_MAIN:
-			cr2->Rend();
-			if (!frameNumber.compareFrameNumber(FrameNumber::FRAME_NUMBER::CREDIT2_MAIN)) {
-				delete cr2;
-				cr2 = NULL;
+		case FrameNumber::FRAME_NUMBER::CREDIT_INIT:
+			cr = new CreditRender();
+			frameNumber.setFrameNumber(FrameNumber::FRAME_NUMBER::CREDIT_MAIN);
+		case FrameNumber::FRAME_NUMBER::CREDIT_MAIN:
+			cr->Rend();
+			if (!frameNumber.compareFrameNumber(FrameNumber::FRAME_NUMBER::CREDIT_MAIN)) {
+				delete cr;
+				cr = NULL;
 			}
 			break;
 		case FrameNumber::FRAME_NUMBER::TITLE_INIT:
@@ -86,12 +72,14 @@ namespace Frame{
 			if (!frameNumber.compareFrameNumber(FrameNumber::FRAME_NUMBER::SONG_SELECT_MAIN)) {
 				level = ssr->getSelectedSheetLevel();
 				songName = ssr->getSelectedSongName();
+				autoPlay = ssr->getAutoPlay();
+				customSkin = ssr->getCustomSkin();
 				delete ssr;
 				ssr = NULL;
 			}
 			break;
 		case FrameNumber::FRAME_NUMBER::PLAY_INIT:
-			pr = new PlayRender(songName, level);
+			pr = new PlayRender(songName, level, autoPlay, customSkin);
 			frameNumber.setFrameNumber(FrameNumber::FRAME_NUMBER::PLAY_MAIN);
 		case FrameNumber::FRAME_NUMBER::PLAY_MAIN:
 			pr->Rend();

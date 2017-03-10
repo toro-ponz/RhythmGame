@@ -15,6 +15,7 @@ namespace Sound {
 		~OggPlayer();
 		bool Play(bool);
 		void Pause();
+		void Stop();
 		Dix::PCMPlayer::STATE getState();
 
 	private:

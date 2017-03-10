@@ -1,4 +1,5 @@
 #pragma once
+
 #include "SpriteDrawingClass.h"
 #include "SoundPlayer.h"
 
@@ -13,6 +14,7 @@ namespace Frame {
 		void Rend();
 
 	private:
+		SpriteDrawing Background;
 		SpriteDrawing Title;
 		SpriteDrawing Black;
 		DWORD oldTime;

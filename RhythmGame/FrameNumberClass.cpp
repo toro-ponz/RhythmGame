@@ -5,7 +5,7 @@ namespace Frame {
 	*  コンストラクタ
 	*/
 	FrameNumber::FrameNumber() {
-		frameNumber = FRAME_NUMBER::CREDIT1_INIT;
+		frameNumber = FRAME_NUMBER::CREDIT_INIT;
 	}
 
 	/**

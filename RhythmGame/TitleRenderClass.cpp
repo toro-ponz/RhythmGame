@@ -1,9 +1,10 @@
 #include "TitleRenderClass.h"
-#include "GlobalVariable.h"
+#include "Global.h"
 
 namespace Frame {
 	//コンストラクタ
 	TitleRender::TitleRender() :
+			Background(imageDirectoryPath + "background.png"),
 			Title(openingImageDirectoryPath + "title.png"),
 			Black(colorDirectoryPath + "black.png") {
 		Black.setRectFromPixel(0, 0, 768, 0, 1024);
@@ -22,6 +23,7 @@ namespace Frame {
 		DWORD time = timeGetTime();
 		inputDevice->getPushState();
 
+		Background.Draw();
 		Title.Draw();
 		Black.Draw();
 
@@ -33,8 +35,10 @@ namespace Frame {
 			oldTime = time;
 		}
 
-		if (inputDevice->getPushStateAny(InputDevice::KEY_STATE::STATE_PUSH))
+		if (inputDevice->getPushStateAny(InputDevice::KEY_STATE::STATE_PUSH)) {
 			frameNumber.setFrameNumber(FrameNumber::FRAME_NUMBER::SONG_SELECT_INIT);
+			playSoundEffectFromResource(6);
+		}
 
 		Sprite->End();
 	}

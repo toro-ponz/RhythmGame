@@ -11,6 +11,7 @@ namespace Device {
 				DirectInputDevice8->SetDataFormat(&c_dfDIKeyboard);
 				DirectInputDevice8->SetCooperativeLevel(hWnd, DISCL_NONEXCLUSIVE | DISCL_FOREGROUND);
 				DirectInputDevice8->Acquire();
+				loadKeyNumber();
 				keyboardEnabled = true;
             }
             else {
@@ -81,7 +82,7 @@ namespace Device {
 	bool Keyboard::getPushState(int key, int mode) {
 		if (keyboardEnabled) {
 			if (!mode) {
-				if (currentKeyState[key] & 0x80) {
+				if (currentKeyState[keyNumber[key]] & 0x80) {
 					return true;
 				}
 				else {
@@ -89,7 +90,7 @@ namespace Device {
 				}
 			}
 			else {
-				if ((currentKeyState[key] & 0x80) && !(oldKeyState[key] & 0x80)) {
+				if ((currentKeyState[keyNumber[key]] & 0x80) && !(oldKeyState[keyNumber[key]] & 0x80)) {
 					return true;
 				}
 				else {
@@ -130,6 +131,54 @@ namespace Device {
 		else {
 			return false;
 		}
+	}
+
+	/**
+	*  押されているキーナンバーを返す関数.
+	*  @param mode<int> 0:押されているかどうか, 1:今押されたかどうか
+	*  @return <int> キーナンバー
+	*/
+	int Keyboard::getPushedKeyNumber(int mode) {
+		if (keyboardEnabled) {
+			if (!mode) {
+				for (int i = 0; i < sizeof(currentKeyState); i++) {
+					if (currentKeyState[i] & 0x80) {
+						return i;
+					}
+				}
+				return NULL;
+			}
+			else {
+				for (int i = 0; i < sizeof(currentKeyState); i++) {
+					if ((currentKeyState[i] & 0x80) && !(oldKeyState[i] & 0x80)) {
+						return i;
+					}
+				}
+				return NULL;
+			}
+		}
+		else {
+			return NULL;
+		}
+	}
+	
+	/**
+	* キー割り当てをconf.iniから読み込む関数.
+	*/
+	void Keyboard::loadKeyNumber() {
+		TCHAR* configFilePath = _T("Data/conf.ini");
+		keyNumber[0] = GetPrivateProfileInt(_T("keyboard"), _T("arrow-up"), DIK_W, configFilePath);
+		keyNumber[1] = GetPrivateProfileInt(_T("keyboard"), _T("arrow-down"), DIK_S, configFilePath);
+		keyNumber[2] = GetPrivateProfileInt(_T("keyboard"), _T("arrow-left"), DIK_A, configFilePath);
+		keyNumber[3] = GetPrivateProfileInt(_T("keyboard"), _T("arrow-right"), DIK_D, configFilePath);
+		keyNumber[4] = GetPrivateProfileInt(_T("keyboard"), _T("button-up"), DIK_I, configFilePath);
+		keyNumber[5] = GetPrivateProfileInt(_T("keyboard"), _T("button-down"), DIK_K, configFilePath);
+		keyNumber[6] = GetPrivateProfileInt(_T("keyboard"), _T("button-left"), DIK_J, configFilePath);
+		keyNumber[7] = GetPrivateProfileInt(_T("keyboard"), _T("button-right"), DIK_L, configFilePath);
+		keyNumber[8] = GetPrivateProfileInt(_T("keyboard"), _T("button-select"), DIK_F1, configFilePath);
+		keyNumber[9] = GetPrivateProfileInt(_T("keyboard"), _T("button-start"), DIK_F2, configFilePath);
+		keyNumber[10] = GetPrivateProfileInt(_T("keyboard"), _T("trigger-left"), DIK_Q, configFilePath);
+		keyNumber[11] = GetPrivateProfileInt(_T("keyboard"), _T("trigger-right"), DIK_O, configFilePath);
 	}
 
 	/**
@@ -234,19 +283,24 @@ namespace Device {
 			bool result = false;
 			HRESULT hr = DirectInputDevice8->GetDeviceState(sizeof(DIJOYSTATE), &js);
 			if (key == 0) {
-				if (js.lY == -1000) result = true;
+				if (js.lY == -1000)
+					result = true;
 			}
 			else if (key == 1) {
-				if (js.lY == 1000) result = true;
+				if (js.lY == 1000)
+					result = true;
 			}
 			else if (key == 2) {
-				if (js.lX == -1000) result = true;
+				if (js.lX == -1000)
+					result = true;
 			}
 			else if (key == 3) {
-				if (js.lX == 1000) result = true;
+				if (js.lX == 1000)
+					result = true;
 			}
 			else {
-				if (js.rgbButtons[keyNumber[key] - 4] & 0x80) result = true;
+				if (js.rgbButtons[keyNumber[key] - 4] & 0x80)
+					result = true;
 			}
 			return result;
 		}
@@ -305,16 +359,38 @@ namespace Device {
 			return false;
 		}
 	}
-	
-	/**
-	* キー割り当てをセットしData/conf.iniに書き込む関数.
-	*/
-	void Joystick::setKeyNumber() {
 
+	/**
+	*  押されているキーナンバーを返す関数.
+	*  @param mode<int> 0:押されているかどうか, 1:今押されたかどうか
+	*  @return <int> キーナンバー
+	*/
+	int Joystick::getPushedKeyNumber(int mode) {
+		if (joystickEnabled) {
+			if (!mode) {
+				for (int i = 0; i < 20; i++) {
+					if (currentButtonState[i] == true) {
+						return keyNumber[i] + 1;
+					}
+				}
+				return NULL;
+			}
+			else {
+				for (int i = 0; i < 20; i++) {
+					if ((oldButtonState[i] == false) && (currentButtonState[i] == true)) {
+						return keyNumber[i] + 1;
+					}
+				}
+				return NULL;
+			}
+		}
+		else {
+			return NULL;
+		}
 	}
 	
 	/**
-	* キー割り当てをData/conf.iniから読み込む関数.
+	* キー割り当てをconf.iniから読み込む関数.
 	*/
 	void Joystick::loadKeyNumber() {
 		TCHAR* configFilePath = _T("Data/conf.ini");
@@ -322,14 +398,14 @@ namespace Device {
 		keyNumber[1] = GetPrivateProfileInt(_T("joystick"), _T("arrow-down"), 2, configFilePath) - 1;
 		keyNumber[2] = GetPrivateProfileInt(_T("joystick"), _T("arrow-left"), 3, configFilePath) - 1;
 		keyNumber[3] = GetPrivateProfileInt(_T("joystick"), _T("arrow-right"), 4, configFilePath) - 1;
-		keyNumber[4] = GetPrivateProfileInt(_T("joystick"), _T("button-up"), 1, configFilePath) + 3;
-		keyNumber[5] = GetPrivateProfileInt(_T("joystick"), _T("button-down"), 2, configFilePath) + 3;
-		keyNumber[6] = GetPrivateProfileInt(_T("joystick"), _T("button-left"), 3, configFilePath) + 3;
-		keyNumber[7] = GetPrivateProfileInt(_T("joystick"), _T("button-right"), 4, configFilePath) + 3;
-		keyNumber[8] = GetPrivateProfileInt(_T("joystick"), _T("button-select"), 5, configFilePath) + 3;
-		keyNumber[9] = GetPrivateProfileInt(_T("joystick"), _T("button-start"), 6, configFilePath) + 3;
-		keyNumber[10] = GetPrivateProfileInt(_T("joystick"), _T("trigger-left"), 7, configFilePath) + 3;
-		keyNumber[11] = GetPrivateProfileInt(_T("joystick"), _T("trigger-right"), 8, configFilePath) + 3;
+		keyNumber[4] = GetPrivateProfileInt(_T("joystick"), _T("button-up"), 5, configFilePath) - 1;
+		keyNumber[5] = GetPrivateProfileInt(_T("joystick"), _T("button-down"), 6, configFilePath) - 1;
+		keyNumber[6] = GetPrivateProfileInt(_T("joystick"), _T("button-left"), 7, configFilePath) - 1;
+		keyNumber[7] = GetPrivateProfileInt(_T("joystick"), _T("button-right"), 8, configFilePath) - 1;
+		keyNumber[10] = GetPrivateProfileInt(_T("joystick"), _T("trigger-left"), 9, configFilePath) - 1;
+		keyNumber[11] = GetPrivateProfileInt(_T("joystick"), _T("trigger-right"), 10, configFilePath) - 1;
+		keyNumber[8] = GetPrivateProfileInt(_T("joystick"), _T("button-select"), 11, configFilePath) - 1;
+		keyNumber[9] = GetPrivateProfileInt(_T("joystick"), _T("button-start"), 12, configFilePath) - 1;
 	}
 
 	/**
@@ -413,7 +489,11 @@ namespace Device {
 	*  @return <bool> 判定結果
 	*/
 	bool InputDevice::getPushState(KEY key, KEY_STATE mode) {
-		bool joy = joystick.getPushState(joystickKeys[key], mode);
+		bool joy;
+		if (key >= KEY::RETURN)
+			joy = false;
+		else
+			joy = joystick.getPushState(joystickKeys[key], mode);
 		bool kb;
 		if (key == KEY::ARROW_UP || key == KEY::ARROW_DOWN || key == KEY::ARROW_LEFT || key == KEY::ARROW_RIGHT)
 			kb = keyboard.getPushState(keyboardKeys[key], mode) || keyboard.getPushState(keyboardKeys[key + 14], mode);
@@ -430,7 +510,51 @@ namespace Device {
 	bool InputDevice::getPushStateAny(KEY_STATE mode) {
 		return joystick.getPushStateAny(mode) || keyboard.getPushStateAny(mode);
 	}
+
+	/**
+	*  キーボードの1つでもキーが押されているかどうか判定する関数.
+	*  @param mode<KEY_STATE> STATE_HAVE_PUSHED:押されているかどうか, STATE_PUSH:今押されたかどうか
+	*  @return <bool> 判定結果
+	*/
+	bool InputDevice::getKeyboardPushStateAny(KEY_STATE mode) {
+		return keyboard.getPushStateAny(mode);
+	}
+
+	/**
+	*  ジョイスティックの1つでもキーが押されているかどうか判定する関数.
+	*  @param mode<KEY_STATE> STATE_HAVE_PUSHED:押されているかどうか, STATE_PUSH:今押されたかどうか
+	*  @return <bool> 判定結果
+	*/
+	bool InputDevice::getJoystickPushStateAny(KEY_STATE mode) {
+		return joystick.getPushStateAny(mode);
+	}
+
+	/**
+	*  押されているキーナンバーを返す関数.
+	*  @param mode<KEY_STATE> STATE_HAVE_PUSHED:押されているかどうか, STATE_PUSH:今押されたかどうか
+	*  @return <int> キーナンバー
+	*/
+	int InputDevice::getKeyboardPushKeyNumber(KEY_STATE mode) {
+		return keyboard.getPushedKeyNumber(mode);
+	}
+
+	/**
+	*  押されているキーナンバーを返す関数.
+	*  @param mode<KEY_STATE> STATE_HAVE_PUSHED:押されているかどうか, STATE_PUSH:今押されたかどうか
+	*  @return <int> キーナンバー
+	*/
+	int InputDevice::getJoystickPushKeyNumber(KEY_STATE mode) {
+		return joystick.getPushedKeyNumber(mode);
+	}
 	
+	/**
+	* キー割り当てをconf.iniから読み込む関数.
+	*/
+	void InputDevice::loadKeyNumber() {
+		keyboard.loadKeyNumber();
+		joystick.loadKeyNumber();
+	}
+
 	/**
 	*  入力デバイスを再開する関数.
 	*  @return <bool> どちらかのデバイスが再開できればtrue

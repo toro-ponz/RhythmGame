@@ -1,6 +1,7 @@
 #include "PlayRenderClass.h"
-#include "GlobalVariable.h"
+#include "Global.h"
 #include <time.h>
+#include <shlwapi.h>
 #include <fstream>
 #include <sstream>
 #include <iostream>
@@ -19,21 +20,36 @@ namespace Frame {
 	/**
 	*  コンストラクタ
 	*/
-	PlayRender::PlayRender(string name, int level) :
+	PlayRender::PlayRender(string name, int level, bool ap, bool cs) :
 			notes(playImageDirectoryPath + "notes.png", 1, 64.0f),
 			userInterfaceOne(playImageDirectoryPath + "ui1.png"),
 			userInterfaceTwo(playImageDirectoryPath + "ui2.png"),
-			target(playImageDirectoryPath + "target.png", 7, 128.0f),
+			target(playImageDirectoryPath + "target.png", 7, 150.0f),
 			figures(playImageDirectoryPath + "figures.png", 14, 32.0f),
 			judgeImage(playImageDirectoryPath + "judge.png", 1, 128.0f, 64.0f),
 			pauseMenu(playImageDirectoryPath + "pause.png"),
+			pauseCursor(playImageDirectoryPath + "pause-cursor.png", 1, 50.0f, 50.0f),
 			countdown(playImageDirectoryPath + "countdown.png", 1, 256.0f),
-			meter(colorDirectoryPath + "red.png"),
-			background() {
+			meter(colorDirectoryPath + "light-blue.png"),
+			titleFrame(playImageDirectoryPath + "title-frame.png") {
 		const string songDirectory = songsDirectoryPath + name + "/";
 		const string sheetPath = songDirectory + name + "_" + to_string(level) + ".dat";
 		const string backgroundImagePath = songDirectory + "background.png";
+		const string customSkinsDirectoryPath = songDirectory + "skins/";
+		const string customNotesSkinImagePath = customSkinsDirectoryPath + "notes.png";
+		const string customJufgeSkinImagePath = customSkinsDirectoryPath + "judge.png";
+		const string customFiguresSkinImagePath = customSkinsDirectoryPath + "figures.png";
 		const string musicPath = songDirectory + name + ".ogg";
+
+		autoPlay = ap;
+		customSkin = cs;
+
+		//譜面ファイル、楽曲ファイルが存在しない場合は曲選択画面に戻る
+		if (!PathFileExists(convertStringToTchar(sheetPath)) || !PathFileExists(convertStringToTchar(musicPath))) {
+			enabled = false;
+			return;
+		}
+		enabled = true;
 
 		ifstream ifs(sheetPath);
 		string str, tmp;
@@ -116,13 +132,13 @@ namespace Frame {
 		target.setPosition(4, 480.0f, 352.0f);
 		target.setPosition(5, 544.0f, 352.0f);
 		target.setPosition(6, 512.0f, 384.0f);
-		target.setCenter(0, 64.0f, 64.0f);
-		target.setCenter(1, 64.0f, 64.0f);
-		target.setCenter(2, 64.0f, 64.0f);
-		target.setCenter(3, 64.0f, 64.0f);
-		target.setCenter(4, 64.0f, 64.0f);
-		target.setCenter(5, 64.0f, 64.0f);
-		target.setCenter(6, 64.0f, 64.0f);
+		target.setCenter(0, 75.0f, 75.0f);
+		target.setCenter(1, 75.0f, 75.0f);
+		target.setCenter(2, 75.0f, 75.0f);
+		target.setCenter(3, 75.0f, 75.0f);
+		target.setCenter(4, 75.0f, 75.0f);
+		target.setCenter(5, 75.0f, 75.0f);
+		target.setCenter(6, 75.0f, 75.0f);
 		target.disableDraw(0);
 		target.disableDraw(1);
 		target.disableDraw(2);
@@ -132,27 +148,32 @@ namespace Frame {
 
 		figures.setRectFromChip(4, 13, 16);
 		figures.setRectFromChip(13, 29, 32);
-		figures.setPosition(0, 790.0f, 0.0f);
-		figures.setPosition(1, 790.0f + 25.0f, 0.0f);
-		figures.setPosition(2, 790.0f + 50.0f, 0.0f);
-		figures.setPosition(3, 790.0f + 75.0f, 0.0f);
-		figures.setPosition(4, 767.0f, 32.0f);
-		figures.setPosition(5, 690.0f, 736.0f);
-		figures.setPosition(6, 690.0f + 25.0f, 736.0f);
-		figures.setPosition(7, 690.0f + 50.0f, 736.0f);
-		figures.setPosition(8, 690.0f + 75.0f, 736.0f);
-		figures.setPosition(9, 690.0f + 100.0f, 736.0f);
-		figures.setPosition(10, 690.0f + 125.0f, 736.0f);
-		figures.setPosition(11, 690.0f + 150.0f, 736.0f);
-		figures.setPosition(12, 690.0f + 175.0f, 736.0f);
-		figures.setPosition(13, 767.0f, 704.0f);
+		figures.setPosition(0, 780.0f, 15.0f);
+		figures.setPosition(1, 780.0f + 25.0f, 15.0f);
+		figures.setPosition(2, 780.0f + 50.0f, 15.0f);
+		figures.setPosition(3, 780.0f + 75.0f, 15.0f);
+		figures.setPosition(4, 757.0f, 47.0f);
+		figures.setPosition(5, 685.0f, 726.0f);
+		figures.setPosition(6, 685.0f + 25.0f, 726.0f);
+		figures.setPosition(7, 685.0f + 50.0f, 726.0f);
+		figures.setPosition(8, 685.0f + 75.0f, 726.0f);
+		figures.setPosition(9, 685.0f + 100.0f, 726.0f);
+		figures.setPosition(10, 685.0f + 125.0f, 726.0f);
+		figures.setPosition(11, 685.0f + 150.0f, 726.0f);
+		figures.setPosition(12, 685.0f + 175.0f, 726.0f);
+		figures.setPosition(13, 762.0f, 694.0f);
 
-		judgeImage.setPosition(0, 750.0f, 400.0f);
+		judgeImage.setPosition(0, 750.0f, 420.0f);
 		judgeImage.disableDraw(0);
 
 		pauseMenu.setPosition(0, 512.0f, 384.0f);
-		pauseMenu.setCenter(0, 243.5f, 48.0f);
+		pauseMenu.setCenter(0, 250.0f, 100.0f);
 		pauseMenu.disableDraw(0);
+
+		DWORD interval = 150;
+		pauseCursor.setAnimationInterval(0, 1, 4, &interval, 1, 4);
+		pauseCursor.setPosition(0, 300.0f, 493.0f);
+		pauseCursor.disableDraw(0);
 
 		meter.setCenter(0, 128.0f, 768.0f);
 		meter.setPosition(0, 1024.0f, 768.0f);
@@ -162,25 +183,26 @@ namespace Frame {
 		countdown.setPosition(0, 512.0f, 384.0f);
 		countdown.disableDraw(0);
 
-		background.setTexture(backgroundImagePath);
-		background.setPosition(0, 128.0f, 0.0f);
-		background.enableDraw(0);
+		titleFrame.setCenter(0, 725.0f, 214.0f);
+		titleFrame.setPosition(0, 512.0f, 384.0f);
 
-		const string fontName = "メイリオ";
+		if (customSkin && PathFileExists(convertStringToTchar(backgroundImagePath))) {
+			background.setTexture(backgroundImagePath);
+		}
+		else {
+			background.setTexture(imageDirectoryPath + "background.png");
+		}
+
 		const int songNameFontSize = 60;
 		const int songNameFontWeight = 1;
 		fontTexture.fontCreate(songName, 50.0f, 30.0f, songNameFontSize, songNameFontWeight, fontName, false);
-		fontTexture.setColor(D3DCOLOR_ARGB(255, 135, 222, 255));
+		fontTexture.setColor(D3DCOLOR_ARGB(255, 154, 228, 255));
 
-		TCHAR buf[256];
-		GetPrivateProfileString(_T("play"), _T("autoplay"), _T("ON"), buf, sizeof(buf), convertStringToTchar(configFilePath));
-		if (!_tcscmp(buf, _T("ON"))) autoPlay = true;
-		else autoPlay = false;
+		titleFrameTitle.fontCreate(songName, 200.0f, 300.0f, 80, 1, fontName);
 
 		Song = new OggPlayer(musicPath.c_str());
-		startTime = timeGetTime();
 
-		state = STATE_WAIT;
+		initialize();
 	}
 
 	/**
@@ -194,6 +216,10 @@ namespace Frame {
 	*  描画する関数.
 	*/
 	void PlayRender::Rend() {
+		if (!enabled) {
+			frameNumber.setFrameNumber(FrameNumber::FRAME_NUMBER::SONG_SELECT_INIT);
+			return;
+		}
 		currentTime = timeGetTime();
 		Sprite->Begin(NULL);
 		inputDevice->getPushState();
@@ -255,6 +281,30 @@ namespace Frame {
 		return result;
 	}
 
+	void PlayRender::initialize() {
+		notesDrawStart = 0;
+		notesDrawStop = 0;
+		statusMissCount = 0;
+		statusBadCount = 0;
+		statusNiceCount = 0;
+		statusGoodCount = 0;
+		statusGreatCount = 0;
+		statusScore = 0;
+		statusCurrentCombo = 0;
+		statusMaxCombo = 0;
+		pauseCursorNumber = 1;
+		pauseTime = 0;
+		for (int i = 0; i < notes.getElementCount(); i++) {
+			notes.disableDraw(i);
+		}
+		judgeImage.disableDraw(0);
+		pauseMenu.disableDraw(0);
+		pauseCursor.disableDraw(0);
+		startTime = timeGetTime();
+		timing = GetPrivateProfileInt(_T("play"), _T("notes-timing"), 0, convertStringToTchar(configFilePath));
+		state = STATE_WAIT;
+	}
+
 	/**
 	*  演奏が始まるまで待つ関数.
 	*/
@@ -262,6 +312,8 @@ namespace Frame {
 		calcFPS();
 		updateTitle();
 		draw();
+		titleFrame.Draw();
+		titleFrameTitle.Rend();
 		//notesMoveSpeedミリ秒待ってから再生開始
 		if (Song->getState() != Dix::PCMPlayer::STATE_PLAY && ((int)(currentTime - startTime + pauseTime) >= notesMoveSpeed)) {
 			Song->Play(false);
@@ -282,27 +334,27 @@ namespace Frame {
 				if (notesMolecule[notesDrawStop] && notesDenominator[notesDrawStop])
 					songTime += ((60 * 1000 / songBpm) * notesMolecule[notesDrawStop] / notesDenominator[notesDrawStop]);
 
-				if (songTime <= (currentTime - startTime - pauseTime)) {
-					float plus = (float)((currentTime - startTime - pauseTime - songTime) * 384.0 / notesMoveSpeed);
+				if (songTime + timing <= (currentTime - startTime - pauseTime)) {
+					float plus = (float)((currentTime - startTime - pauseTime - songTime - timing) * 384.0 / notesMoveSpeed);
 					notes.enableDraw(notesDrawStop);
 					switch (notesDirection[notesDrawStop]) {
 					case DIRECTION_FROM_TOP:
-						notes.setPosition(notesDrawStop, 512.5f, -32.0f + plus);
+						notes.setPosition(notesDrawStop, 512.0f, -32.0f + plus);
 						break;
 					case DIRECTION_FROM_BOTTOM:
-						notes.setPosition(notesDrawStop, 512.5f, (768.0f + 32.0f) - plus);
+						notes.setPosition(notesDrawStop, 512.0f, (768.0f + 32.0f) - plus);
 						break;
 					case DIRECTION_FROM_LEFT:
-						notes.setPosition(notesDrawStop, (128.0f - 32.0f) + plus, 384.5f);
+						notes.setPosition(notesDrawStop, (128.0f - 32.0f) + plus, 384.0f);
 						break;
 					case DIRECTION_FROM_RIGHT:
-						notes.setPosition(notesDrawStop, (896.0f + 32.0f) - plus, 384.5f);
+						notes.setPosition(notesDrawStop, (896.0f + 32.0f) - plus, 384.0f);
 						break;
 					case DIRECTION_FROM_TOP_LEFT:
-						notes.setPosition(notesDrawStop, 512.5f - (float)(384.5f / sqrt(2)) - 32.0f + plus, 384.5f - (float)(384.5f / sqrt(2)) - 32.0f + plus);
+						notes.setPosition(notesDrawStop, 512.0f - (float)(384.0f / sqrt(2)) - 32.0f + plus, 384.0f - (float)(384.0f / sqrt(2)) - 32.0f + plus);
 						break;
 					case DIRECTION_FROM_TOP_RIGHT:
-						notes.setPosition(notesDrawStop, 512.5f + (float)(384.5f / sqrt(2)) + 32.0f - plus, 384.5f - (float)(384.5f / sqrt(2)) - 32.0f + plus);
+						notes.setPosition(notesDrawStop, 512.0f + (float)(384.0f / sqrt(2)) + 32.0f - plus, 384.0f - (float)(384.0f / sqrt(2)) - 32.0f + plus);
 						break;
 					}
 					notesDrawStop++;
@@ -324,6 +376,7 @@ namespace Frame {
 		previousTime = currentTime;
 		//曲が終了したらリザルト画面のフレームへ
 		if (state == STATE_PLAY && Song->getState() != Dix::PCMPlayer::STATE_PLAY && Song->getState() != Dix::PCMPlayer::STATE_PAUSE) {
+			//playSoundEffectFromResource(10);
 			frameNumber.setFrameNumber(FrameNumber::FRAME_NUMBER::RESULT_INIT);
 		}
 	}
@@ -337,28 +390,48 @@ namespace Frame {
 			Song->Pause();
 			countdownTime = timeGetTime();
 		}
+
+		pauseCursor.setPosition(0, 300.0f, 423.0f + (70.0f * pauseCursorNumber));
+
 		calcFPS();
 		updateTitle();
 		draw();
-
-		//STARTSELECT同時押しで再開カウントダウンへ
-		if ((inputDevice->getPushState(InputDevice::KEY::BUTTON_SELECT, InputDevice::KEY_STATE::STATE_HAVE_PUSHED) &&
-			inputDevice->getPushState(InputDevice::KEY::BUTTON_START, InputDevice::KEY_STATE::STATE_PUSH)) ||
-			(inputDevice->getPushState(InputDevice::KEY::BUTTON_SELECT, InputDevice::KEY_STATE::STATE_PUSH) &&
-			inputDevice->getPushState(InputDevice::KEY::BUTTON_START, InputDevice::KEY_STATE::STATE_HAVE_PUSHED))) {
-			state = STATE_RESTART;
-			pauseMenu.disableDraw(0);
-			countdown.enableDraw(0);
-			pauseTime += currentTime - countdownTime;
-			countdownTime = timeGetTime();
+		if (inputDevice->getPushState(InputDevice::KEY::ARROW_UP, InputDevice::KEY_STATE::STATE_PUSH)) {
+			if (pauseCursorNumber != 1) {
+				playSoundEffectFromResource(4);
+				pauseCursorNumber--;
+			}
 		}
-
-		//LR同時押しでSONGSELECTへ
-		if ((inputDevice->getPushState(InputDevice::KEY::TRIGGER_LEFT, InputDevice::KEY_STATE::STATE_HAVE_PUSHED) &&
-			inputDevice->getPushState(InputDevice::KEY::TRIGGER_RIGHT, InputDevice::KEY_STATE::STATE_PUSH)) ||
-			(inputDevice->getPushState(InputDevice::KEY::TRIGGER_LEFT, InputDevice::KEY_STATE::STATE_PUSH) &&
-			inputDevice->getPushState(InputDevice::KEY::TRIGGER_RIGHT, InputDevice::KEY_STATE::STATE_HAVE_PUSHED))) {
-			frameNumber.setFrameNumber(FrameNumber::FRAME_NUMBER::SONG_SELECT_INIT);
+		else if (inputDevice->getPushState(InputDevice::KEY::ARROW_DOWN, InputDevice::KEY_STATE::STATE_PUSH)) {
+			if (pauseCursorNumber != 3) {
+				playSoundEffectFromResource(4);
+				pauseCursorNumber++;
+			}
+		}
+		else if (inputDevice->getPushState(InputDevice::KEY::BUTTON_RIGHT, InputDevice::KEY_STATE::STATE_PUSH) ||
+			inputDevice->getPushState(InputDevice::KEY::RETURN, InputDevice::KEY_STATE::STATE_PUSH)) {
+			switch (pauseCursorNumber) {
+			case 1:
+				playSoundEffectFromResource(6);
+				pauseMenu.disableDraw(0);
+				pauseCursor.disableDraw(0);
+				countdown.enableDraw(0);
+				pauseTime += currentTime - countdownTime;
+				countdownTime = timeGetTime();
+				pauseCursor.setPosition(0, 300.0f, 493.0f);
+				state = STATE_RESTART;
+				break;
+			case 2:
+				playSoundEffectFromResource(6);
+				Song->Stop();
+				pauseCursor.setPosition(0, 300.0f, 493.0f);
+				initialize();
+				break;
+			case 3:
+				playSoundEffectFromResource(6);
+				frameNumber.setFrameNumber(FrameNumber::FRAME_NUMBER::SONG_SELECT_INIT);
+				break;
+			}
 		}
 	}
 
@@ -366,35 +439,29 @@ namespace Frame {
 	*  一時停止から再開中の関数.
 	*/
 	void PlayRender::restart() {
-		//5秒待って再開
-		if (currentTime > countdownTime + 5000) {
+		//3秒待って再開
+		if (currentTime > countdownTime + 3000) {
 			state = STATE_PLAY;
 			countdown.disableDraw(0);
 			Song->Play(false);
 			pauseTime += currentTime - countdownTime;
 		}
-		else if (currentTime > countdownTime + 4000)
-			countdown.setRectFromChip(0, 1);
-		else if (currentTime > countdownTime + 3000)
-			countdown.setRectFromChip(0, 2);
 		else if (currentTime > countdownTime + 2000)
-			countdown.setRectFromChip(0, 3);
+			countdown.setRectFromChip(0, 1);
 		else if (currentTime > countdownTime + 1000)
-			countdown.setRectFromChip(0, 4);
+			countdown.setRectFromChip(0, 2);
 		else
-			countdown.setRectFromChip(0, 5);
+			countdown.setRectFromChip(0, 3);
 
 		calcFPS();
 		updateTitle();
 		draw();
 
-		//LR同時押しでPause画面に戻る
-		if ((inputDevice->getPushState(InputDevice::KEY::TRIGGER_LEFT, InputDevice::KEY_STATE::STATE_HAVE_PUSHED) &&
-			inputDevice->getPushState(InputDevice::KEY::TRIGGER_RIGHT, InputDevice::KEY_STATE::STATE_PUSH)) ||
-			(inputDevice->getPushState(InputDevice::KEY::TRIGGER_LEFT, InputDevice::KEY_STATE::STATE_PUSH) &&
-			inputDevice->getPushState(InputDevice::KEY::TRIGGER_RIGHT, InputDevice::KEY_STATE::STATE_HAVE_PUSHED))) {
+		//Pause画面に戻る
+		if (inputDevice->getPushState(InputDevice::KEY::ESCAPE, InputDevice::KEY_STATE::STATE_PUSH)) {
 			state = STATE_PAUSE;
 			pauseMenu.enableDraw(0);
+			pauseCursor.enableDraw(0);
 			countdown.disableDraw(0);
 			pauseTime += currentTime - countdownTime;
 			countdownTime = timeGetTime();
@@ -426,11 +493,14 @@ namespace Frame {
 		if (inputDevice->getPushState(InputDevice::KEY::TRIGGER_RIGHT, InputDevice::KEY_STATE::STATE_PUSH))
 			target.enableDraw(5);
 
-		//START又はSELECT押下でポーズ
+		//ポーズ
 		if (inputDevice->getPushState(InputDevice::KEY::BUTTON_SELECT, InputDevice::KEY_STATE::STATE_PUSH) ||
-			inputDevice->getPushState(InputDevice::KEY::BUTTON_START, InputDevice::KEY_STATE::STATE_PUSH)) {
+			inputDevice->getPushState(InputDevice::KEY::BUTTON_START, InputDevice::KEY_STATE::STATE_PUSH) ||
+			inputDevice->getPushState(InputDevice::KEY::ESCAPE, InputDevice::KEY_STATE::STATE_PUSH)) {
+			playSoundEffectFromResource(6);
 			state = STATE_PAUSE;
 			pauseMenu.enableDraw(0);
+			pauseCursor.enableDraw(0);
 		}
 	}
 
@@ -646,11 +716,11 @@ namespace Frame {
 				case DIRECTION_FROM_BOTTOM:
 				case DIRECTION_FROM_TOP_LEFT:
 				case DIRECTION_FROM_TOP_RIGHT:
-					playSoundEffect(arrowKeySoundEffectPath[judge]);
+					playSoundEffectFromFile(arrowKeySoundEffectPath[judge]);
 					break;
 				case DIRECTION_FROM_LEFT:
 				case DIRECTION_FROM_RIGHT:
-					playSoundEffect(triggerKeySoundEffectPath[judge]);
+					playSoundEffectFromFile(triggerKeySoundEffectPath[judge]);
 					break;
 				}
 				switch (judge) {
@@ -719,6 +789,7 @@ namespace Frame {
 		judgeImage.Draw();
 		figureDraw();
 		pauseMenu.Draw();
+		pauseCursor.Draw();
 		countdown.Draw();
 	}
 
@@ -835,15 +906,5 @@ namespace Frame {
 		}
 
 		figures.Draw();
-	}
-
-	/**
-	*  SEを再生する関数.
-	*  @param path<string> ファイルパス
-	*/
-	void PlayRender::playSoundEffect(string path) {
-		if (path != "") {
-			PlaySound(convertStringToTchar(path), NULL, SND_FILENAME | SND_ASYNC);
-		}
 	}
 }

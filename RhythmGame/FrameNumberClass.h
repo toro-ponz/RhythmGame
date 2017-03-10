@@ -6,10 +6,8 @@ namespace Frame {
 		FrameNumber();
 		~FrameNumber();
 		enum class FRAME_NUMBER {
-			CREDIT1_INIT,
-			CREDIT1_MAIN,
-			CREDIT2_INIT,
-			CREDIT2_MAIN,
+			CREDIT_INIT,
+			CREDIT_MAIN,
 			TITLE_INIT,
 			TITLE_MAIN,
 			SONG_SELECT_INIT,

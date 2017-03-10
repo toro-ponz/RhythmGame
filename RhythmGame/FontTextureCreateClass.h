@@ -19,19 +19,24 @@ namespace Font {
 		void Rend();
 		void fontCreate(string, float, float, int, int, string, bool = true);
 		void setPosition(float, float);
+		void setWidthOrHeight(float);
 		void disableDraw();
 		void enableDraw();
 		void setColor(D3DCOLOR);
 
 	private:
-		void FontCreate(wchar_t*);
 		void setFontStatus(int, int, string);
 
 		SpriteDrawing fontTextures;
 		LOGFONT logFont;
 		LPDIRECT3DTEXTURE9 pTex = NULL;
+
+		string letters;
+
 		float startPositionX;
 		float startPositionY;
+		float maxWidth;
+		float maxHeight;
 		int fontSize;
 		int fontWeight;
 		int lettersLength;

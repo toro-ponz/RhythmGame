@@ -2,8 +2,7 @@
 #pragma comment(lib, "d3d9.lib")
 #pragma comment(lib, "d3dx9.lib")
 
-#include "Credit1RenderClass.h"
-#include "Credit2RenderClass.h"
+#include "CreditRenderClass.h"
 #include "TitleRenderClass.h"
 #include "SongSelectRenderClass.h"
 #include "PlayRenderClass.h"
@@ -20,8 +19,7 @@ namespace Frame {
 		void Rend();
 
 	private:
-		Credit1Render * cr1;
-		Credit2Render * cr2;
+		CreditRender * cr;
 		TitleRender * tr;
 		SongSelectRender * ssr;
 		PlayRender * pr;
@@ -30,5 +28,7 @@ namespace Frame {
 		int result[7] = { 30, 10, 25, 90, 430, 102, 201390 };
 		int level;
 		string songName;
+		bool autoPlay;
+		bool customSkin;
 	};
 }

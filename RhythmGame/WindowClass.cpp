@@ -1,7 +1,5 @@
-#define _CRT_SECURE_NO_WARNINGS
-
 #include "WindowClass.h"
-#include "GlobalVariable.h"
+#include "Global.h"
 
 namespace Win {
 	/**
@@ -197,7 +195,7 @@ namespace Win {
 	void Window::loadWindowSettings() {
 		TCHAR buf[256];
 		GetPrivateProfileString(_T("window"), _T("mode"), _T("WINDOW"), buf, sizeof(buf), _T("Data/conf.ini"));
-		if (!_tcscmp(buf, _T("FULL_SCREEN"))) windowMode = false;
+		if (!_tcscmp(buf, _T("FULL_SCREEN"))) windowMode = true;
 		else windowMode = true;
 		GetPrivateProfileString(_T("directx"), _T("v-sync"), _T("ON"), buf, sizeof(buf), _T("Data/conf.ini"));
 		if (!_tcscmp(buf, _T("OFF"))) vSync = false;

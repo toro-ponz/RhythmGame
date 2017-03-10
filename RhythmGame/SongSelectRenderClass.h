@@ -18,13 +18,14 @@ namespace Frame {
 		void Rend();
 		int getSelectedSheetLevel();
 		string getSelectedSongName();
-		int selectedSheetlevel;
-		string selectedSongName;
+		bool getAutoPlay();
+		bool getCustomSkin();
 
 	private:
 		bool searchDirectory();
 		bool loadSaveData();
 		void setSongNameFontPosition(int);
+		void setLevelStars();
 		
 		SpriteDrawing Background;
 		SpriteDrawing Title;
@@ -34,10 +35,13 @@ namespace Frame {
 		SpriteDrawing Cursor;
 		SpriteDrawing LevelSelect;
 		SpriteDrawing LevelCursor;
+		SpriteDrawing LevelStars;
 		SpriteDrawing OnOff;
+		SpriteDrawing Tutorial;
 		SpriteDrawing Black;
 
 		vector<FontTextureCreate> fontTexture;
+		FontTextureCreate tutorialText;
 
 		vector<string> songName;
 		vector<vector<int>> sheetStars;
@@ -45,13 +49,19 @@ namespace Frame {
 		vector<vector<int>> sheetPlayState;
 		vector<vector<int>> score;
 
-		int songCount = 1;
-		int songNumber = 1;
-		int scrollSongNumber = 1;
-		int cursorNumber = 1;
+		string selectedSongName;
 
+		int selectedSheetlevel;
+		int songCount;
+		int songNumber;
+		int scrollSongNumber;
+		int cursorNumber;
+
+		bool defaultAutoPlay;
+		bool defaultCustomSkin;
 		bool autoPlay;
 		bool customSkin;
+		bool tutorialDialog;
 
 		enum class STATE {
 			SONG_SELECT,
