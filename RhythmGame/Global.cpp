@@ -1,7 +1,8 @@
-#include "GlobalVariable.h"
+#include "Global.h"
+#include "resource.h"
 #include <vector>
 
-namespace GlobalVariable {
+namespace Global {
 	HWND hWnd;
 	LPD3DXSPRITE Sprite;
 	LPDIRECT3DDEVICE9 Direct3DDevice9;
@@ -25,6 +26,10 @@ namespace GlobalVariable {
 	const string resultImageDirectoryPath = imageDirectoryPath + "result/";
 	const string songselectImageDirectoryPath = imageDirectoryPath + "songselect/";
 
+	const string resourcePath = "";
+
+	const string fontName = "メイリオ";
+	
 	/**
 	*  const char*型の文字列をchar*型に変換する関数.
 	*  @param letters<const char*> 変換する文字列のポインタ
@@ -93,5 +98,48 @@ namespace GlobalVariable {
 #else
 		return convertConstCharToChar(letters.c_str());
 #endif
+	}
+	
+	/**
+	*  SEを再生する関数.
+	*  @param path<string> ファイルパス
+	*/
+	void playSoundEffectFromFile(string path) {
+		if (path != "") {
+			PlaySound(convertStringToTchar(path), NULL, SND_FILENAME | SND_ASYNC);
+		}
+	}
+
+	/**
+	*  SEを再生する関数.
+	*  @param suffix<int> リソース番号
+	*/
+	void playSoundEffectFromResource(int suffix) {
+		switch (suffix) {
+		case 1:
+			PlaySound(MAKEINTRESOURCE(IDR_WAVE1), NULL, SND_RESOURCE | SND_ASYNC);
+			break;
+		case 2:
+			PlaySound(MAKEINTRESOURCE(IDR_WAVE2), NULL, SND_RESOURCE | SND_ASYNC);
+			break;
+		case 3:
+			PlaySound(MAKEINTRESOURCE(IDR_WAVE3), NULL, SND_RESOURCE | SND_ASYNC);
+			break;
+		case 4:
+			PlaySound(MAKEINTRESOURCE(IDR_WAVE4), NULL, SND_RESOURCE | SND_ASYNC);
+			break;
+		case 5:
+			PlaySound(MAKEINTRESOURCE(IDR_WAVE5), NULL, SND_RESOURCE | SND_ASYNC);
+			break;
+		case 6:
+			PlaySound(MAKEINTRESOURCE(IDR_WAVE6), NULL, SND_RESOURCE | SND_ASYNC);
+			break;
+		case 7:
+			PlaySound(MAKEINTRESOURCE(IDR_WAVE7), NULL, SND_RESOURCE | SND_ASYNC);
+			break;
+		case 8:
+			PlaySound(MAKEINTRESOURCE(IDR_WAVE8), NULL, SND_RESOURCE | SND_ASYNC);
+			break;
+		}
 	}
 }

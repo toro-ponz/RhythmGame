@@ -9,7 +9,7 @@
 using namespace Device;
 using std::string;
 
-namespace GlobalVariable {
+namespace Global {
 	extern HWND hWnd;
 	extern LPD3DXSPRITE Sprite;
 	extern LPDIRECT3DDEVICE9 Direct3DDevice9;
@@ -32,12 +32,19 @@ namespace GlobalVariable {
 	extern const string playImageDirectoryPath;
 	extern const string resultImageDirectoryPath;
 	extern const string songselectImageDirectoryPath;
+	
+	extern const string resourcePath;
+
+	extern const string fontName;
 
 	char* convertConstCharToChar(const char*);
 	wchar_t* convertCharToWchar_t(const char*);
 	char* convertWchar_tToChar(const wchar_t*);
 	string convertTcharToString(const TCHAR*);
 	TCHAR* convertStringToTchar(const string);
+
+	void playSoundEffectFromFile(string);
+	void playSoundEffectFromResource(int);
 }
 
-using namespace GlobalVariable;
+using namespace Global;
