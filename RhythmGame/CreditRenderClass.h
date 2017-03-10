@@ -7,14 +7,14 @@ using namespace DxSprite;
 using namespace Sound;
 
 namespace Frame {
-	class Credit2Render {
+	class CreditRender {
 	public:
-		Credit2Render();
-		~Credit2Render();
+		CreditRender();
+		~CreditRender();
 		void Rend(void);
 
 	private:
-		SpriteDrawing Description;
+		SpriteDrawing Logo;
 		SpriteDrawing Black;
 		DWORD oldTime;
 		int state;

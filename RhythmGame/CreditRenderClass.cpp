@@ -1,12 +1,12 @@
-#include "Credit1RenderClass.h"
+#include "CreditRenderClass.h"
 #include "InputDevice.h"
-#include "GlobalVariable.h"
+#include "Global.h"
 
 namespace Frame {
 	/**
 	*  コンストラクタ
 	*/
-	Credit1Render::Credit1Render() :
+	CreditRender::CreditRender() :
 			Logo(creditImageDirectoryPath + "logo.png"),
 			Black(colorDirectoryPath + "black.png") {
 		Logo.setPosition(0, 256.0f, 320.0f);
@@ -18,14 +18,14 @@ namespace Frame {
 	/**
 	*  デストラクタ
 	*/
-	Credit1Render::~Credit1Render() {
+	CreditRender::~CreditRender() {
 
 	}
 
 	/**
 	*  描画する関数.
 	*/
-	void Credit1Render::Rend(void) {
+	void CreditRender::Rend(void) {
 		Sprite->Begin(NULL);
 
 		DWORD time = timeGetTime();
@@ -65,12 +65,12 @@ namespace Frame {
 			}
 			break;
 		case 3:
-			frameNumber.setFrameNumber(FrameNumber::FRAME_NUMBER::CREDIT2_INIT);
+			frameNumber.setFrameNumber(FrameNumber::FRAME_NUMBER::TITLE_INIT);
 			break;
 		}
 
 		if (inputDevice->getPushStateAny(InputDevice::KEY_STATE::STATE_PUSH))
-			frameNumber.setFrameNumber(FrameNumber::FRAME_NUMBER::CREDIT2_INIT);
+			frameNumber.setFrameNumber(FrameNumber::FRAME_NUMBER::TITLE_INIT);
 
 		Sprite->End();
 	}
